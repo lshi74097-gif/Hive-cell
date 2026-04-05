@@ -1,0 +1,703 @@
+
+
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+  }
+
+  .wrap {
+    
+
+    padding: 12px 0 40px;
+    font-family: var(--font-sans)
+  }
+  .wrap {
+  background-image: url('/home/sec/wallpapers/a-52.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+:root {
+  /* 文本颜色 */
+  --color-text-primary: #ffffff;    /* 纯白 */
+  
+}
+  h1 {
+    font-size: 20px;
+    font-weight: 500;
+    color: white;
+    margin-bottom: 3px
+    
+  }
+
+  .meta {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-bottom: 14px
+  }
+
+  .filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 14px
+  }
+
+  .filter-btn {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 0.5px solid var(--color-border-secondary);
+    background: var(--color-background-secondary);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all .15s
+  }
+
+  .filter-btn.active {
+    background: var(--color-text-primary);
+    color: var(--color-background-primary);
+    border-color: transparent
+  }
+
+  .track {
+    margin-bottom: 8px;
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: 12px;
+    overflow: hidden
+  }
+
+  .track-hdr {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    cursor: pointer;
+    background: var(--color-background-secondary)
+  }
+
+  .track-hdr:hover {
+    background: var(--color-background-tertiary)
+  }
+
+  .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0
+  }
+
+  .ti .en {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-primary)
+  }
+
+  .ti .zh {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    margin-top: 1px
+  }
+
+  .ti {
+    flex: 1
+  }
+
+  .cnt {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    margin-right: 4px
+  }
+
+  .chev {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    transition: transform .2s
+  }
+
+  .chev.o {
+    transform: rotate(90deg)
+  }
+
+  .tbody {
+    display: none
+  }
+
+  .tbody.o {
+    display: block
+  }
+
+  .phase {
+    padding: 10px 14px;
+    border-top: 0.5px solid var(--color-border-tertiary)
+  }
+
+  .plabel {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--color-text-tertiary);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 6px
+  }
+
+  .plabel::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--color-border-tertiary)
+  }
+
+  .skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px
+  }
+
+  .sk {
+    display: inline-flex;
+    flex-direction: column;
+    padding: 5px 9px;
+    border-radius: 6px;
+    border: 0.5px solid var(--color-border-tertiary);
+    background: var(--color-background-primary);
+    min-width: 130px;
+    flex: 1
+  }
+
+  .sk .e {
+    font-size: 12px;
+    color: var(--color-text-primary);
+    line-height: 1.3
+  }
+
+  .sk .z {
+    font-size: 10px;
+    color: var(--color-text-secondary);
+    margin-top: 1px
+  }
+
+  .sk.lv0 {
+    border-left: 2px solid #5DCAA5
+  }
+
+  .sk.lv1 {
+    border-left: 2px solid #378ADD
+  }
+
+  .sk.lv2 {
+    border-left: 2px solid #D4537E
+  }
+
+  .sk.lv3 {
+    border-left: 2px solid #BA7517
+  }
+
+  .legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px
+  }
+
+  .leg {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--color-text-secondary)
+  }
+
+  .ldot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%
+  }
+
+  .stat {
+    font-size: 11px;
+    color: var(--color-text-white);
+    margin-bottom: 10px
+  }
+</style>
+<div class="wrap">
+  <h1>渗透测试 · 完整技术栈</h1>
+  <p class="meta">Binary Security & Penetration Testing · Full Stack ·</p>
+  <div class="legend">
+    <div class="leg">
+      <div class="ldot" style="background:#5DCAA5"></div>基础 Foundation
+    </div>
+    <div class="leg">
+      <div class="ldot" style="background:#378ADD"></div>进阶 Intermediate
+    </div>
+    <div class="leg">
+      <div class="ldot" style="background:#D4537E"></div>高级 Advanced
+    </div>
+    <div class="leg">
+      <div class="ldot" style="background:#BA7517"></div>专项 Specialist
+    </div>
+  </div>
+  <div class="filters" id="filters"></div>
+  <div id="tracks"></div>
+</div>
+<script>
+  const D = [
+    {
+      id: "prog", color: "#5DCAA5", en: "Programming & CS Fundamentals", zh: "编程与计算机基础", phases: [
+        {
+          lv: 0, label: "基础 Foundation", s: [
+            ["C / C++", "C/C++语言"], ["Python", "Python脚本"], ["x86 / x64 Assembly", "x86汇编"], ["ARM Assembly", "ARM汇编"],
+            ["MIPS Assembly", "MIPS汇编"], ["Linux OS Internals", "Linux内核原理"], ["Windows OS Internals", "Windows内核原理"],
+            ["Data Structures & Algorithms", "数据结构与算法"], ["File Formats ELF/PE/Mach-O", "可执行文件格式"],
+            ["Compiler Theory", "编译原理"], ["Linker & Loader", "链接与加载"], ["Memory Management", "内存管理"],
+            ["Bash / Shell Scripting", "Shell脚本"], ["Makefile / CMake", "构建系统"],
+          ]
+        },
+        {
+          lv: 1, label: "进阶 Intermediate", s: [
+            ["Rust (memory safety)", "Rust语言"], ["Go", "Go语言"], ["JavaScript / Node.js", "JS运行时"],
+            ["Java Bytecode", "Java字节码"], ["Python ctypes / cffi", "底层Python绑定"],
+            ["POSIX APIs", "POSIX接口"], ["Windows API / Win32", "Win32接口"],
+            ["COM / DCOM Internals", "COM内部机制"], ["Regular Expressions", "正则表达式"],
+            [".NET CLR Internals", ".NET运行时"], ["Git & Version Control", "版本控制"],
+          ]
+        },
+      ]
+    },
+    {
+      id: "re", color: "#378ADD", en: "Reverse Engineering", zh: "逆向工程", phases: [
+        {
+          lv: 0, label: "基础 Foundation", s: [
+            ["Static Analysis", "静态分析"], ["Dynamic Analysis", "动态分析"], ["IDA Pro", "IDA Pro反汇编"],
+            ["Ghidra", "Ghidra反汇编"], ["Binary Ninja", "Binary Ninja"], ["Radare2 / Cutter", "Radare2"],
+            ["GDB / pwndbg / peda", "Linux调试器"], ["WinDbg / x64dbg / OllyDbg", "Windows调试器"],
+            ["LLDB", "LLDB调试器"], ["Calling Conventions", "调用约定"], ["Code Decompilation", "反编译技术"],
+            ["Symbol Recovery", "符号恢复"], ["FLIRT Signatures", "FLIRT签名"],
+          ]
+        },
+        {
+          lv: 1, label: "进阶 Intermediate", s: [
+            ["Obfuscation & Packing", "混淆与加壳"], ["Binary Patching", "二进制补丁"], ["Control Flow Analysis", "控制流分析"],
+            ["Anti-Debugging Techniques", "反调试技术"], ["Anti-VM / Anti-Sandbox", "反虚拟机"],
+            ["DLL / Shared Library Internals", "动态库机制"], ["Frida (Dynamic Instrumentation)", "Frida动态插桩"],
+            ["Pin / DynamoRIO", "二进制插桩框架"], ["YARA Rules", "YARA规则"], ["Firmware Reversing", "固件逆向"],
+            [".NET Reversing (dnSpy / ILSpy)", ".NET逆向"], ["Java Reversing (jadx / JD-GUI)", "Java逆向"],
+            ["Android APK Reversing", "Android逆向"], ["iOS IPA Reversing", "iOS逆向"],
+          ]
+        },
+        {
+          lv: 2, label: "高级 Advanced", s: [
+            ["Deobfuscation", "去混淆技术"], ["Emulation (Unicorn / QEMU)", "模拟执行"],
+            ["Symbolic Execution (angr / Triton)", "符号执行"], ["Taint Analysis", "污点分析"],
+            ["Protocol Reverse Engineering", "协议逆向"], ["Kernel Driver Reversing", "内核驱动逆向"],
+            ["Rootkit / Bootkit Analysis", "Rootkit分析"], ["Malware Behavior Analysis", "恶意软件行为分析"],
+            ["Sandbox Analysis (Cuckoo / ANY.RUN)", "沙箱分析"], ["VM-based Obfuscation (VMProtect)", "虚拟机保护逆向"],
+          ]
+        },
+      ]
+    },
+    {
+      id: "pwn", color: "#D4537E", en: "Binary Exploitation (PWN)", zh: "二进制漏洞利用 PWN", phases: [
+        {
+          lv: 0, label: "基础 Foundation", s: [
+            ["Memory Layout (Stack/Heap/BSS)", "内存布局"], ["Stack Buffer Overflow", "栈溢出"],
+            ["Return Address Overwrite", "返回地址覆盖"], ["Shellcode Writing", "Shellcode编写"],
+            ["Format String Vulnerabilities", "格式化字符串漏洞"], ["GOT / PLT Hijacking", "GOT/PLT劫持"],
+            ["ret2libc", "ret2libc技术"], ["ret2plt", "ret2plt技术"], ["NOP Sled", "NOP滑板"],
+          ]
+        },
+        {
+          lv: 1, label: "进阶 Intermediate", s: [
+            ["ASLR Bypass", "ASLR绕过"], ["DEP / NX Bypass", "DEP/NX绕过"], ["Stack Canary Bypass", "Stack Canary绕过"],
+            ["Return-Oriented Programming (ROP)", "ROP链构造"], ["ret2csu", "ret2csu技术"],
+            ["SROP (Sigreturn-Oriented Programming)", "SROP"], ["JOP / COP", "JOP/COP"],
+            ["ret2dlresolve", "ret2dlresolve"], ["RELRO Bypass", "RELRO绕过"],
+            ["Heap Exploitation (glibc malloc)", "glibc堆漏洞"], ["tcache Attacks", "tcache攻击"],
+            ["fastbin Attack", "fastbin攻击"], ["unsorted bin Attack", "unsorted bin攻击"],
+            ["Use-After-Free (UAF)", "释放后使用"], ["Double Free", "双重释放"],
+            ["Integer Overflow / Underflow", "整数溢出"], ["Off-by-One", "差一漏洞"],
+            ["Null Pointer Dereference", "空指针解引用"], ["pwntools", "pwntools工具库"], ["ROPgadget / ropper", "ROP工具"],
+          ]
+        },
+        {
+          lv: 2, label: "高级 Advanced", s: [
+            ["House of Force", "House of Force"], ["House of Spirit", "House of Spirit"],
+            ["House of Orange", "House of Orange"], ["House of Roman", "House of Roman"],
+            ["House of Lore", "House of Lore"], ["Heap Feng Shui", "堆风水布局"],
+            ["large bin Attack", "large bin攻击"], ["vtable Hijacking (C++)", "C++ vtable劫持"],
+            ["Type Confusion", "类型混淆"], ["C++ Exception Handling Abuse", "C++异常处理滥用"],
+            ["FSOP (File Stream Oriented Programming)", "FSOP文件流攻击"],
+            ["CFG / CET / Shadow Stack Bypass", "CFG/CET绕过"], ["GS Cookie Bypass", "GS Cookie绕过"],
+            ["SMEP / SMAP / KASLR Bypass", "内核保护绕过"], ["Kernel ROP", "内核ROP"],
+            ["ret2usr", "ret2usr内核利用"], ["KPTI Bypass", "KPTI绕过"],
+            ["Kernel Heap (SLUB/SLAB)", "内核堆利用"], ["eBPF Exploitation", "eBPF漏洞利用"],
+            ["io_uring Exploitation", "io_uring漏洞"], ["Race Conditions (Kernel)", "内核竞争条件"],
+            ["JIT Exploitation (V8/SpiderMonkey)", "JIT漏洞利用"], ["JIT Spraying", "JIT喷射"],
+            ["Sandbox Escape (Chrome/Firefox)", "浏览器沙箱逃逸"], ["Windows Kernel Exploitation", "Windows内核利用"],
+            ["Driver / IOCTL Exploitation", "驱动/IOCTL漏洞"], ["Hypervisor Exploitation", "虚拟机逃逸漏洞"],
+          ]
+        },
+      ]
+    },
+    {
+      id: "vuln", color: "#BA7517", en: "Vulnerability Research", zh: "漏洞挖掘研究", phases: [
+        {
+          lv: 1, label: "进阶 Intermediate", s: [
+            ["Manual Code Auditing", "人工代码审计"], ["Source Code Auditing", "源码审计"],
+            ["Patch Diffing (BinDiff / Diaphora)", "补丁差分分析"], ["CVE Research", "CVE漏洞研究"],
+            ["n-Day Analysis", "n-Day分析"], ["Fuzzing (AFL++ / LibFuzzer)", "模糊测试"],
+            ["Coverage-Guided Fuzzing", "覆盖率引导模糊"], ["Grammar-Based Fuzzing", "语法模糊测试"],
+            ["Corpus Minimization", "语料库精简"], ["Static Analysis (CodeQL / Semgrep)", "静态分析工具"],
+            ["Dynamic Analysis (ASan / MSan / TSan)", "动态分析工具"], ["Valgrind", "Valgrind内存检测"],
+          ]
+        },
+        {
+          lv: 2, label: "高级 Advanced", s: [
+            ["0-Day Research", "零日漏洞挖掘"], ["Kernel Fuzzing (syzkaller / TriforceAFL)", "内核模糊测试"],
+            ["Hypervisor Fuzzing", "虚拟机模糊测试"], ["Variant Analysis", "变体分析"],
+            ["Structure-Aware Fuzzing", "结构感知模糊"], ["Symbolic Fuzzing (KLEE / S2E)", "符号模糊测试"],
+            ["PoC Development", "PoC开发"], ["Exploit Development", "Exploit开发"],
+            ["CVSS Scoring & Disclosure", "CVSS评分与披露"], ["Bug Bounty Methodology", "漏洞赏金方法论"],
+          ]
+        },
+      ]
+    },
+    {
+      id: "crypto", color: "#5DCAA5", en: "Cryptography & Attacks", zh: "密码学与攻击", phases: [
+        {
+          lv: 0, label: "基础 Foundation", s: [
+            ["Classical Ciphers (Caesar/Vigenere)", "古典密码"], ["Symmetric Encryption (AES/DES)", "对称加密"],
+            ["Asymmetric Encryption (RSA/ECC)", "非对称加密"], ["Hash Functions (MD5/SHA)", "哈希函数"],
+            ["bcrypt / scrypt / Argon2", "密码哈希"], ["Block Cipher Modes (ECB/CBC/GCM)", "分组密码模式"],
+            ["PKI & Certificate Infrastructure", "PKI证书体系"], ["TLS/SSL Internals", "TLS内部机制"],
+          ]
+        },
+        {
+          lv: 1, label: "进阶 Intermediate", s: [
+            ["Padding Oracle Attack", "填充预言攻击"], ["CBC Bit Flipping", "CBC位翻转"],
+            ["Length Extension Attack", "长度扩展攻击"], ["Timing Attacks", "时序攻击"],
+            ["RSA Small Exponent Attack", "RSA小指数攻击"], ["RSA Common Modulus", "RSA公模攻击"],
+            ["Wiener's Attack", "Wiener攻击"], ["Bleichenbacher Attack", "Bleichenbacher攻击"],
+            ["SSL Stripping", "SSL剥离"], ["Certificate Pinning Bypass", "证书绑定绕过"],
+            ["DLP (Baby-step Giant-step)", "离散对数攻击"],
+          ]
+        },
+        {
+          lv: 2, label: "高级 Advanced", s: [
+            ["Coppersmith's Attack", "Coppersmith攻击"], ["Pohlig-Hellman", "Pohlig-Hellman算法"],
+            ["Lattice Attacks (LLL)", "格攻击"], ["Elliptic Curve Attacks", "椭圆曲线攻击"],
+            ["Differential Cryptanalysis", "差分密码分析"], ["Linear Cryptanalysis", "线性密码分析"],
+            ["Side-Channel (Cache Timing)", "缓存侧信道"], ["Zero-Knowledge Proofs", "零知识证明"],
+            ["Secret Sharing (Shamir's)", "秘密共享"], ["BEAST / CRIME / BREACH", "协议层攻击"],
+          ]
+        },
+      ]
+    },
+    {
+      id: "netpen", color: "#378ADD", en: "Network Penetration Testing", zh: "网络渗透测试", phases: [
+        {
+          lv: 0, label: "基础 Foundation", s: [
+            ["TCP/IP & OSI Model", "协议栈基础"], ["Nmap / Masscan", "端口扫描"], ["Wireshark / Tcpdump", "流量分析"],
+            ["DNS / DHCP / ARP", "基础协议"], ["SNMP Enumeration", "SNMP枚举"], ["LDAP Enumeration", "LDAP枚举"],
+            ["SMB / RDP / SSH Attacks", "协议攻击"], ["FTP / TFTP Attacks", "文件传输协议攻击"],
+            ["Database Attacks (MSSQL/MySQL)", "数据库攻击"], ["VPN / Proxy / Tor", "匿名通道"],
+            ["Metasploit Framework", "渗透框架"], ["Netcat / Socat", "网络工具"],
+          ]
+        },
+        {
+          lv: 1, label: "进阶 Intermediate", s: [
+            ["Network Pivoting", "内网穿透"], ["VLAN Hopping", "VLAN跳转攻击"], ["ARP Spoofing / Poisoning", "ARP欺骗"],
+            ["Man-in-the-Middle (MitM)", "中间人攻击"], ["IPv6 Attacks", "IPv6攻击"],
+            ["STP Manipulation", "STP操控"], ["CDP / LLDP Attacks", "CDP/LLDP攻击"],
+            ["SMTP / POP3 / IMAP Attacks", "邮件协议攻击"], ["VoIP Attacks (SIP/H.323)", "VoIP攻击"],
+            ["Credential Spraying", "密码喷洒"], ["Lateral Movement", "横向移动"],
+            ["Firewall / IDS Evasion", "防火墙绕过"], ["BGP Hijacking", "BGP劫持"],
+          ]
+        },
+        {
+          lv: 2, label: "高级 Advanced", s: [
+            ["C2 Infrastructure", "C2基础设施"], ["Traffic Obfuscation", "流量混淆"],
+            ["Domain Fronting", "域前置"], ["DNS Tunneling", "DNS隧道"], ["ICMP Tunneling", "ICMP隧道"],
+            ["Wi-Fi Attacks (WPA2/PMKID)", "Wi-Fi攻击"], ["802.1X Bypass", "802.1X绕过"],
+            ["Bluetooth / BLE Attacks", "蓝牙攻击"], ["Zigbee / Z-Wave Attacks", "Zigbee攻击"],
+            ["RF Attacks (SDR)", "射频攻击"], ["4G/5G Security", "4G/5G安全"], ["SS7 Attacks", "SS7攻击"],
+          ]
+        },
+      ]
+    },
+    {
+      id: "web", color: "#D4537E", en: "Web Penetration Testing", zh: "Web渗透测试", phases: [
+        {
+          lv: 0, label: "基础 Foundation", s: [
+            ["HTTP / HTTPS Internals", "HTTP协议"], ["OWASP Top 10", "OWASP十大漏洞"],
+            ["SQL Injection (SQLi)", "SQL注入"], ["XSS (Reflected/Stored/DOM)", "跨站脚本"],
+            ["CSRF", "跨站请求伪造"], ["Directory Traversal", "目录遍历"], ["File Upload Bypass", "文件上传绕过"],
+            ["Authentication Bypass", "认证绕过"], ["IDOR", "越权访问"], ["Open Redirect", "开放重定向"],
+            ["Burp Suite Pro", "抓包改包工具"], ["FFUF / Gobuster", "目录爆破"],
+          ]
+        },
+        {
+          lv: 1, label: "进阶 Intermediate", s: [
+            ["SSRF", "服务端请求伪造"], ["SSTI (Jinja2/Twig/Freemarker)", "服务端模板注入"], ["XXE", "XML外部实体"],
+            ["Deserialization Attacks", "反序列化漏洞"], ["NoSQL Injection (MongoDB)", "NoSQL注入"],
+            ["LDAP Injection", "LDAP注入"], ["Command Injection", "命令注入"], ["Code Injection", "代码注入"],
+            ["HTTP Request Smuggling (CL.TE/TE.CL)", "请求走私"], ["CORS Misconfiguration", "CORS错误配置"],
+            ["JWT Attacks (alg:none / RS→HS256)", "JWT漏洞"], ["OAuth 2.0 Abuse", "OAuth2攻击"],
+            ["SAML Attacks (XML Signature Wrapping)", "SAML攻击"], ["WebSocket Attacks", "WebSocket攻击"],
+            ["GraphQL Injection / Introspection", "GraphQL攻击"], ["Host Header Injection", "Host头注入"],
+            ["CRLF Injection", "CRLF注入"], ["Mass Assignment", "批量赋值漏洞"], ["Race Conditions (Web)", "Web竞争条件"],
+          ]
+        },
+        {
+          lv: 2, label: "高级 Advanced", s: [
+            ["DOM-based XSS", "DOM型XSS"], ["Prototype Pollution", "原型链污染"],
+            ["Cache Poisoning", "缓存投毒"], ["Web Cache Deception", "缓存欺骗"],
+            ["Subdomain Takeover", "子域名接管"], ["DNS Rebinding", "DNS重绑定"],
+            ["HTTP/2 Attacks", "HTTP/2攻击"], ["Browser Exploitation (via Web)", "浏览器利用"],
+            ["WAF Bypass Techniques", "WAF绕过技术"], ["Expression Language Injection", "EL注入"],
+            ["PDF / Excel Formula Injection", "文档注入"], ["gRPC / WebRTC Security", "gRPC安全"],
+            ["Serverless Attacks", "无服务器攻击"], ["API Gateway Attacks", "API网关攻击"],
+            ["OpenID Connect Attacks", "OIDC攻击"], ["JSONP Hijacking", "JSONP劫持"],
+            ["CSS Injection", "CSS注入"], ["XPath Injection", "XPath注入"],
+          ]
+        },
+      ]
+    },
+    {
+      id: "privesc", color: "#BA7517", en: "Privilege Escalation & Post-Exploitation", zh: "权限提升与后渗透", phases: [
+        {
+          lv: 1, label: "Linux 提权", s: [
+            ["SUID / SGID Abuse", "SUID滥用"], ["Sudo Misconfigurations", "Sudo错误配置"],
+            ["Capabilities Abuse", "Linux能力滥用"], ["Cron Job Abuse", "定时任务滥用"],
+            ["PATH Hijacking", "PATH劫持"], ["LD_PRELOAD Injection", "库预加载注入"],
+            ["Weak File Permissions", "弱文件权限"], ["NFS no_root_squash", "NFS提权"],
+            ["DirtyCow / DirtyPipe", "内核CVE提权"], ["Docker Escape", "Docker逃逸"],
+            ["LXC / LXD Escape", "LXC/LXD逃逸"], ["Overlayfs Exploit", "Overlayfs提权"],
+            ["ptrace Abuse", "ptrace滥用"], ["Kernel Module Loading", "内核模块提权"],
+          ]
+        },
+        {
+          lv: 1, label: "Windows 提权", s: [
+            ["DLL Hijacking", "DLL劫持"], ["DLL Search Order Hijacking", "DLL搜索顺序劫持"],
+            ["Unquoted Service Paths", "未引用服务路径"], ["Weak Service Permissions", "弱服务权限"],
+            ["AlwaysInstallElevated", "Always安装提升"], ["Registry Autorun", "注册表自启动"],
+            ["COM Object Hijacking", "COM劫持"], ["UAC Bypass", "UAC绕过"],
+            ["SeImpersonatePrivilege (Potato)", "土豆提权"], ["SeDebugPrivilege", "调试权限滥用"],
+            ["SeBackupPrivilege", "备份权限滥用"], ["AppLocker Bypass", "AppLocker绕过"],
+            ["Token Impersonation", "令牌伪造"], ["Scheduled Task Abuse", "计划任务滥用"],
+          ]
+        },
+        {
+          lv: 2, label: "凭据提取 Credential Access", s: [
+            ["Mimikatz / LSASS Dump", "LSASS转储"], ["SAM Database Extraction", "SAM数据库提取"],
+            ["NTDS.dit Extraction", "域哈希提取"], ["Password Cracking (Hashcat/JtR)", "密码破解"],
+            ["Responder / NTLMv2 Capture", "NTLM哈希捕获"], ["Pass-the-Hash", "哈希传递"],
+            ["Pass-the-Ticket", "票据传递"], ["Overpass-the-Hash", "哈希转票据"],
+          ]
+        },
+        {
+          lv: 2, label: "域攻击 Active Directory", s: [
+            ["BloodHound / SharpHound", "域信息收集"], ["Kerberoasting", "Kerberoasting攻击"],
+            ["AS-REP Roasting", "AS-REP Roasting"], ["DCSync Attack", "DCSync攻击"],
+            ["DCShadow", "DCShadow攻击"], ["Golden Ticket", "黄金票据"], ["Silver Ticket", "白银票据"],
+            ["Diamond / Sapphire Ticket", "Diamond票据"], ["Skeleton Key", "骨架密钥"],
+            ["ACL Abuse (WriteDACL/GenericAll)", "ACL滥用"], ["GPO Abuse", "GPO滥用"],
+            ["Unconstrained Delegation", "非约束委派"], ["Constrained Delegation", "约束委派"],
+            ["RBCD (Resource-Based Constrained Delegation)", "基于资源的约束委派"],
+            ["AdminSDHolder Abuse", "AdminSDHolder滥用"], ["SID History Abuse", "SID历史滥用"],
+            ["ADCS Attacks (ESC1-ESC8)", "证书服务攻击"], ["Forest Trust Attacks", "域林信任攻击"],
+            ["Impacket Suite", "Impacket工具集"],
+          ]
+        },
+        {
+          lv: 2, label: "持久化 Persistence", s: [
+            ["Registry Persistence", "注册表持久化"], ["WMI Subscriptions", "WMI订阅"],
+            ["Scheduled Tasks / Cron", "计划任务"], ["Bootkit / UEFI Rootkit", "引导级持久化"],
+            ["Timestomping", "时间戳伪造"], ["Event Log Clearing", "日志清除"],
+            ["Memory Forensics Evasion", "内存取证规避"], ["Steganography", "隐写术"],
+          ]
+        },
+      ]
+    },
+    {
+      id: "evasion", color: "#5DCAA5", en: "Malware Development & Evasion", zh: "恶意软件开发与绕过", phases: [
+        {
+          lv: 1, label: "进阶 Intermediate", s: [
+            ["Process Injection (DLL Injection)", "DLL注入"], ["Process Hollowing", "进程镂空"],
+            ["APC Injection", "APC注入"], ["Thread Hijacking", "线程劫持"],
+            ["Atom Bombing", "Atom Bombing注入"], ["Reflective DLL Injection", "反射DLL注入"],
+            ["Module Stomping", "模块覆盖"], ["Shellcode Injection", "Shellcode注入"],
+            ["Payload Staging", "载荷分阶段"], ["Dropper Development", "投递器开发"],
+            ["AMSI Bypass", "AMSI绕过"], ["ETW Patching", "ETW补丁"],
+            ["PowerShell Constrained Language Bypass", "PowerShell约束绕过"],
+          ]
+        },
+        {
+          lv: 2, label: "高级 Advanced", s: [
+            ["Direct Syscalls", "直接系统调用"], ["Indirect Syscalls", "间接系统调用"],
+            ["API Unhooking", "API解钩"], ["Hardware Breakpoints Abuse", "硬件断点滥用"],
+            ["PPID Spoofing", "父进程欺骗"], ["Process Doppelgänging", "进程幽灵"],
+            ["Transacted Hollowing", "事务镂空"], ["Memory Scanning Evasion", "内存扫描规避"],
+            ["Packer Development", "加壳开发"], ["Crypter / Obfuscator", "加密混淆器"],
+            ["Anti-Analysis (Anti-Debug/VM/Sandbox)", "反分析技术"], ["Environment Keying", "环境绑定"],
+            ["C2 Beacon Development", "C2信标开发"], ["DNS C2", "DNS C2通道"],
+            ["ICMP C2", "ICMP C2通道"], ["EDR / AV Evasion", "终端防护绕过"],
+            ["Living Off the Land (LOTL)", "无文件攻击"], ["Transient Execution Attacks", "瞬态执行攻击"],
+          ]
+        },
+      ]
+    },
+    {
+      id: "cloud", color: "#378ADD", en: "Cloud & Container Security", zh: "云安全与容器安全", phases: [
+        {
+          lv: 1, label: "进阶 Intermediate", s: [
+            ["AWS IAM Privilege Escalation", "AWS IAM提权"], ["S3 Bucket Misconfiguration", "S3存储桶错误配置"],
+            ["EC2 Metadata SSRF", "EC2元数据SSRF"], ["Lambda Abuse", "Lambda滥用"],
+            ["Azure Service Principal Abuse", "Azure服务主体滥用"], ["Managed Identity Abuse", "托管身份滥用"],
+            ["Azure Storage Account Attacks", "Azure存储攻击"], ["GCP Service Account Abuse", "GCP服务账户滥用"],
+            ["Kubernetes RBAC Abuse", "K8s RBAC滥用"], ["Pod Escape", "Pod逃逸"],
+            ["etcd Access", "etcd未授权访问"], ["kubelet API Abuse", "kubelet API滥用"],
+            ["Docker Registry Attacks", "Docker镜像仓库攻击"],
+          ]
+        },
+        {
+          lv: 2, label: "高级 Advanced", s: [
+            ["Terraform / IaC Security", "IaC安全"], ["CI/CD Pipeline Attacks", "CI/CD攻击"],
+            ["GitHub Actions Exploitation", "GitHub Actions利用"], ["Jenkins / GitLab CI Attacks", "Jenkins攻击"],
+            ["Supply Chain Attacks", "供应链攻击"], ["Azure AD Attacks", "Azure AD攻击"],
+            ["Hybrid Environment Attacks", "混合环境攻击"], ["CDN Attacks", "CDN攻击"],
+            ["Serverless Exploitation", "无服务器漏洞利用"], ["Cloud Forensics", "云取证"],
+          ]
+        },
+      ]
+    },
+    {
+      id: "mobile", color: "#D4537E", en: "Mobile Security", zh: "移动端安全", phases: [
+        {
+          lv: 1, label: "Android", s: [
+            ["APK Structure & DEX Bytecode", "APK结构与DEX"], ["Smali / Baksmali", "Smali反编译"],
+            ["Android Permissions Model", "Android权限模型"], ["ADB Usage", "ADB工具"],
+            ["Frida for Android", "Frida Android插桩"], ["Drozer", "Drozer测试框架"],
+            ["MobSF", "MobSF自动分析"], ["SSL Pinning Bypass (Android)", "SSL绑定绕过"],
+            ["Root Detection Bypass", "Root检测绕过"], ["Android Obfuscation", "Android混淆"],
+            ["Android Kernel Exploitation", "Android内核漏洞"],
+          ]
+        },
+        {
+          lv: 1, label: "iOS", s: [
+            ["IPA Structure", "IPA结构"], ["Objective-C Runtime", "ObjC运行时"], ["Swift Reversing", "Swift逆向"],
+            ["Jailbreak Detection Bypass", "越狱检测绕过"], ["Frida for iOS", "Frida iOS插桩"],
+            ["Objection", "Objection测试工具"], ["cycript", "cycript运行时注入"],
+            ["Binary Protections (PIE/ARC/Stack Canary)", "iOS二进制保护"],
+            ["iOS Kernel Exploitation", "iOS内核漏洞"], ["App Transport Security Bypass", "ATS绕过"],
+          ]
+        },
+      ]
+    },
+    {
+      id: "hw", color: "#BA7517", en: "Hardware & IoT Security", zh: "硬件与IoT安全", phases: [
+        {
+          lv: 1, label: "进阶 Intermediate", s: [
+            ["UART / JTAG / SWD Interfaces", "硬件调试接口"], ["Logic Analyzers", "逻辑分析仪"],
+            ["Oscilloscopes", "示波器"], ["I2C / SPI / CAN Bus Attacks", "总线攻击"],
+            ["UART Shell Access", "UART串口Shell"], ["Bootloader Unlocking", "Bootloader解锁"],
+            ["Firmware Extraction (NAND/NOR Flash)", "固件提取"], ["Flash Memory Reading (Chip-Off)", "芯片级读取"],
+            ["RF Attacks (SDR / Replay)", "射频重放攻击"], ["RFID / NFC Cloning", "RFID克隆"],
+          ]
+        },
+        {
+          lv: 2, label: "高级 Advanced", s: [
+            ["Side-Channel Attacks (Power Analysis)", "功耗侧信道"], ["Timing Attacks (Hardware)", "时序侧信道"],
+            ["Electromagnetic Analysis (EMA)", "电磁分析"], ["Fault Injection (Voltage Glitching)", "电压毛刺注入"],
+            ["Clock Glitching", "时钟毛刺"], ["Laser Fault Injection", "激光注入"],
+            ["Secure Boot Bypass", "安全启动绕过"], ["Automotive Security (CAN/OBD-II/UDS)", "车载安全"],
+            ["ICS / SCADA Security (Modbus/DNP3)", "工控系统安全"], ["Satellite Security", "卫星安全"],
+          ]
+        },
+      ]
+    },
+    {
+      id: "tools", color: "#5DCAA5", en: "Tools, CTF & Practice Platforms", zh: "工具集与实战平台", phases: [
+        {
+          lv: 0, label: "必备工具 Essential Tools", s: [
+            ["Kali / Parrot / BlackArch", "安全发行版"], ["IDA Pro / Ghidra / Binary Ninja", "逆向分析"],
+            ["GDB / pwndbg / peda / pwntools", "PWN工具链"], ["WinDbg / x64dbg", "Windows调试"],
+            ["Frida / Objection", "动态插桩"], ["Metasploit / Cobalt Strike", "渗透框架"],
+            ["Burp Suite Pro", "Web测试"], ["Wireshark / Tcpdump", "流量分析"],
+            ["BloodHound / SharpHound", "AD信息收集"], ["Impacket", "Windows协议工具"],
+            ["ROPgadget / ropper / one_gadget", "ROP工具"], ["Volatility / Rekall", "内存取证"],
+            ["Autopsy / FTK / Sleuth Kit", "磁盘取证"], ["Hashcat / John the Ripper", "密码破解"],
+            ["Responder / Inveigh", "NTLM捕获"], ["CrackMapExec / NetExec", "域渗透"],
+            ["Nmap / Masscan / Shodan", "侦察工具"], ["FFUF / Gobuster / Feroxbuster", "Web爆破"],
+            ["AFL++ / LibFuzzer / syzkaller", "模糊测试"], ["angr / Triton / Unicorn", "高级分析"],
+            ["MobSF / Drozer / apktool", "移动安全"], ["SDR (GNU Radio / HackRF)", "射频工具"],
+          ]
+        },
+        {
+          lv: 3, label: "实战平台 Practice Platforms", s: [
+            ["HackTheBox (HTB)", "综合靶场"], ["TryHackMe (THM)", "入门靶场"], ["pwn.college", "PWN专项"],
+            ["CTFtime.org", "CTF赛事平台"], ["VulnHub", "本地靶机"], ["PentesterLab", "Web专项"],
+            ["PortSwigger Web Security Academy", "Web学院"], ["Exploit.Education", "漏洞利用练习"],
+            ["MicroCorruption", "嵌入式CTF"], ["Nightmare (pwn教程)", "PWN学习资源"],
+            ["Root Me", "综合练习"], ["picoCTF", "入门CTF"],
+          ]
+        },
+      ]
+    },
+  ];
+
+  let active = "all";
+  const filters = document.getElementById("filters");
+  const tracksEl = document.getElementById("tracks");
+
+  const allBtn = document.createElement("button");
+  allBtn.className = "filter-btn active"; allBtn.textContent = "全部 All";
+  allBtn.onclick = () => { active = "all"; render(); document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active")); allBtn.classList.add("active") };
+  filters.appendChild(allBtn);
+
+  D.forEach(d => {
+    const b = document.createElement("button");
+    b.className = "filter-btn"; b.textContent = d.zh;
+    b.onclick = () => { active = d.id; render(); document.querySelectorAll(".filter-btn").forEach(x => x.classList.remove("active")); b.classList.add("active") };
+    filters.appendChild(b);
+  });
+
+  function render() {
+    tracksEl.innerHTML = "";
+    const show = active === "all" ? D : D.filter(d => d.id === active);
+    show.forEach(d => {
+      const total = d.phases.reduce((a, p) => a + p.s.length, 0);
+      const t = document.createElement("div"); t.className = "track";
+      const phases = d.phases.map(p => `
+      <div class="phase">
+        <div class="plabel">${p.label} · ${p.s.length} 项</div>
+        <div class="skills">${p.s.map(s => `<div class="sk lv${p.lv}"><span class="e">${s[0]}</span><span class="z">${s[1]}</span></div>`).join("")}</div>
+      </div>`).join("");
+      t.innerHTML = `
+      <div class="track-hdr" onclick="tog(this)">
+        <div class="dot" style="background:${d.color}"></div>
+        <div class="ti"><div class="en">${d.en}</div><div class="zh">${d.zh}</div></div>
+        <span class="cnt">${total} 项</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="tbody">${phases}</div>`;
+      tracksEl.appendChild(t);
+      if (active !== "all") {
+        t.querySelector(".tbody").classList.add("o");
+        t.querySelector(".chev").classList.add("o");
+      }
+    });
+  }
+
+  function tog(hdr) {
+    hdr.nextElementSibling.classList.toggle("o");
+    hdr.querySelector(".chev").classList.toggle("o");
+  }
+
+  render();
+</script>
