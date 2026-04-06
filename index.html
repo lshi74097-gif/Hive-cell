@@ -292,7 +292,7 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
 </head>
 <body>
 
-<div class="bg-layer"><div class="bg-grid"></div></div>
+<div class="bg-layer"><div class="bg-grid">HIVECELL</div></div>
 
 <nav>
   <div class="nav-inner">
@@ -307,7 +307,7 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
     </a>
     <div class="nav-links">
       <a href="#capabilities" class="nav-link"><span class="nl-num">01</span> Research</a>
-      <a href="#research" class="nav-link"><span class="nl-num">02</span> Findings</a>
+      <a href="#research" class="nav-link"><span class="nl-num">02</span> Deep Dives</a>
       <a href="#team" class="nav-link"><span class="nl-num">03</span> Members</a>
       <a href="#terminal" class="nav-link"><span class="nl-num">04</span> Contact</a>
     </div>
@@ -322,7 +322,7 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
   <div class="page">
     <div class="hero-inner">
       <div class="hero-left">
-        <div class="hero-tag">Security Research Lab · 蜂巢实验室</div>
+        <div class="hero-tag">Security Research Lab </div>
         <h1 class="hero-title">
           <span class="stroke">Hive</span>
           <span class="solid">Cell</span>
@@ -331,11 +331,10 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
        <p class="hero-desc">
   An independent laboratory dedicated to offensive and defensive cybersecurity research. We focus on <b>vulnerability discovery</b>, <b>reverse engineering</b>, and <b>security tool development</b>—building knowledge and honing our craft within an environment of open collaboration.
 </p>
-        <div class="hero-btns">
-          <button class="btn-primary" onclick="document.getElementById('research').scrollIntoView({behavior:'smooth'})">查看研究成果</button>
-          <button class="btn-secondary" onclick="document.getElementById('capabilities').scrollIntoView({behavior:'smooth'})">研究方向</button>
-        </div>
-      </div>
+      <div class="hero-btns">
+  <button class="btn-primary" onclick="document.getElementById('research').scrollIntoView({behavior:'smooth'})">View Research</button>
+  <button class="btn-secondary" onclick="document.getElementById('capabilities').scrollIntoView({behavior:'smooth'})">Research Areas</button>
+</div>
 
       <div class="hero-right">
         <div class="hero-hex-wrap">
@@ -403,12 +402,25 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
   <div class="ticker-inner" id="ticker"></div>
 </div>
 
+<section id="hero">
+  <div class="page">
+    <h1 class="hero-title">Hive<em>Cell</em></h1>
+    <p class="hero-desc">
+      An independent laboratory dedicated to offensive and defensive cybersecurity research. We focus on <b>vulnerability discovery</b>, <b>reverse engineering</b>, and <b>security tool development</b>—building knowledge and honing our craft within an environment of open collaboration.
+    </p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('research').scrollIntoView({behavior:'smooth'})">Read Deep Dives</button>
+      <button class="btn-secondary" onclick="document.getElementById('capabilities').scrollIntoView({behavior:'smooth'})">Research Areas</button>
+    </div>
+  </div>
+</section>
+
 <section id="capabilities">
   <div class="page">
     <div class="sec-header fade-in">
-      <div class="sec-tag">01 — Research Direction</div>
-      <div class="sec-title">Research <em>Focus</em></div>
-      <div class="sec-sub">Covering mainstream offensive and defensive research areas, from low-level vulnerabilities to tool development, diving deep into every technical detail.</div>
+      <div class="sec-tag">01 — Expertise</div>
+      <div class="sec-title">Research <em>Areas</em></div>
+      <div class="sec-sub">Covering mainstream offensive and defensive research vectors, from low-level exploitation to automated tooling.</div>
     </div>
     <div class="cap-grid fade-in">
       <div class="cap-card">
@@ -450,7 +462,7 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
         <div class="cap-num">06 —</div>
         <div class="cap-line"></div>
         <div class="cap-name">Security Tooling</div>
-        <div class="cap-desc">Development of internal offensive/defensive auxiliary tools, including scanners, automated exploit frameworks, and traffic analysis scripts, with selective open-source releases to the community.</div>
+        <div class="cap-desc">Development of internal offensive/defensive auxiliary tools, including scanners, automated exploit frameworks, and traffic analysis scripts.</div>
         <div class="cap-tags"><span class="cap-tag">Python</span><span class="cap-tag">C/C++</span><span class="cap-tag">Rust</span></div>
       </div>
     </div>
@@ -460,9 +472,9 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
 <section id="research">
   <div class="page">
     <div class="sec-header fade-in">
-      <div class="sec-tag">02 — Findings</div>
-      <div class="sec-title">Research <em>Output</em></div>
-      <div class="sec-sub">Public vulnerability reports, technical articles, and open-source tools accumulated from our members' daily research.</div>
+      <div class="sec-tag">02 — Deep Dives</div>
+      <div class="sec-title">Technical <em>Analysis</em></div>
+      <div class="sec-sub">Public vulnerability reports, exploit walkthroughs, and open-source tools from our members' daily research.</div>
     </div>
     <div class="research-grid fade-in">
       <div class="res-card featured">
@@ -473,7 +485,7 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
             <span class="res-sev">CRITICAL · 9.8</span>
           </div>
           <div class="res-title">Windows AFD Driver Race Condition Leading to LPE</div>
-          <div class="res-desc">A Use-After-Free (UAF) vulnerability exists in the Windows Ancillary Function Driver (afd.sys), triggered by a race condition in the IOCTL dispatch path. Combined with heap spraying, this allows for Local Privilege Escalation to SYSTEM. Full analysis includes PoC and patch diffing.</div>
+          <div class="res-desc">A Use-After-Free (UAF) vulnerability exists in the Windows Ancillary Function Driver (afd.sys), triggered by a race condition in the IOCTL dispatch path. Combined with heap spraying, this allows for Local Privilege Escalation to SYSTEM.</div>
           <div class="res-footer">
             <span class="res-author">by <span>0xVOID</span></span>
             <a href="#" class="res-link">Full Report</a>
@@ -500,7 +512,7 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
           <span class="res-sev">HIGH</span>
         </div>
         <div class="res-title">V8 JIT Type Confusion — Chrome Sandbox Escape Analysis</div>
-        <div class="res-desc">Analysis of a novel exploitation path in the V8 Turbofan compiler, triggering type confusion during the speculative optimization phase to achieve arbitrary read/write within the renderer process and complete sandbox escape.</div>
+        <div class="res-desc">Analysis of a novel exploitation path in the V8 Turbofan compiler, triggering type confusion during speculative optimization to achieve arbitrary read/write.</div>
         <div class="res-footer">
           <span class="res-author">by <span>n0fade</span></span>
           <a href="#" class="res-link">Read More</a>
@@ -514,7 +526,7 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
           <span class="res-sev low">UTIL</span>
         </div>
         <div class="res-title">NULLCHAIN — Multi-Arch Automated ROP Chain Generator</div>
-        <div class="res-desc">An open-source ROP chain construction tool utilizing the angr symbolic execution engine for Gadget semantic analysis. Supports x64, ARM64, and RISC-V with seamless integration for major PWN frameworks.</div>
+        <div class="res-desc">An open-source ROP chain construction tool utilizing the angr symbolic execution engine for Gadget semantic analysis. Supports x64, ARM64, and RISC-V.</div>
         <div class="res-footer">
           <span class="res-author">by <span>ropcraft</span></span>
           <a href="#" class="res-link">GitHub</a>
@@ -528,7 +540,7 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
           <span class="res-sev">HIGH · 8.1</span>
         </div>
         <div class="res-title">OpenSSL FIPS Module RSA Decryption Timing Side-Channel</div>
-        <div class="res-desc">The RSA implementation in OpenSSL 3.x FIPS modules contains statistically measurable timing differences during the CRT recombination step, allowing a remote attacker to progressively recover private key material.</div>
+        <div class="res-desc">The RSA implementation in OpenSSL 3.x FIPS modules contains timing differences during CRT recombination, allowing for private key material recovery.</div>
         <div class="res-footer">
           <span class="res-author">by <span>cryptokill</span></span>
           <a href="#" class="res-link">Advisory</a>
@@ -542,7 +554,7 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
           <span class="res-sev">CRITICAL · 9.6</span>
         </div>
         <div class="res-title">Fortinet FortiOS Out-of-Bounds Write leading to Unauth RCE</div>
-        <div class="res-desc">An out-of-bounds write vulnerability exists in the SSL-VPN Web management interface. Unauthenticated remote attackers can execute arbitrary code with root privileges; actively exploited in the wild prior to disclosure.</div>
+        <div class="res-desc">An out-of-bounds write vulnerability in the SSL-VPN interface. Unauthenticated remote attackers can execute code with root privileges.</div>
         <div class="res-footer">
           <span class="res-author">by <span>0xVOID</span></span>
           <a href="#" class="res-link">PoC Analysis</a>
@@ -555,9 +567,9 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
 <section id="team">
   <div class="page">
     <div class="sec-header fade-in">
-      <div class="sec-tag">03 — Members</div>
+      <div class="sec-tag">03 — Operators</div>
       <div class="sec-title">The <em>Team</em></div>
-      <div class="sec-sub">Anonymous, identified only by handles. We welcome like-minded researchers to join us.</div>
+      <div class="sec-sub">Anonymous, identified only by handles. We welcome technical contributions from all.</div>
     </div>
     <div class="team-grid fade-in">
       <div class="team-card">
@@ -570,7 +582,7 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
         </div>
         <div class="team-handle">0x00</div>
         <div class="team-role">Founder · Exploit Dev</div>
-        <div class="team-bio">Windows Kernel expert with over a decade in low-level security. Focused on kernel vulnerability research and passionate about turning technical details into readable analysis.</div>
+        <div class="team-bio">Windows Kernel expert with over a decade in low-level security. Focused on kernel vulnerability research and architectural security analysis.</div>
         <div class="team-skills"><span class="tsk">Kernel</span><span class="tsk">Windows</span><span class="tsk">ROP</span></div>
       </div>
       <div class="team-card">
@@ -609,7 +621,7 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
         </div>
         <div class="team-handle">cryptokill</div>
         <div class="team-role">Cryptography</div>
-        <div class="team-bio">Applied Cryptography researcher specializing in side-channel attacks and protocol analysis. The kind that makes mathematicians uneasy. Focused on lattice attacks and implementation flaws.</div>
+        <div class="team-bio">Applied Cryptography researcher specializing in side-channel attacks and implementation flaws. Focused on lattice-based attacks.</div>
         <div class="team-skills"><span class="tsk">Lattice</span><span class="tsk">Side-Ch.</span><span class="tsk">Crypto</span></div>
       </div>
     </div>
@@ -620,7 +632,7 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
   <div class="page">
     <div class="sec-header fade-in">
       <div class="sec-tag">04 — Contact</div>
-      <div class="sec-title">Contact <em>Us</em></div>
+      <div class="sec-title">Secure <em>Channel</em></div>
     </div>
     <div class="term-wrap fade-in">
       <div class="term-bar">
@@ -637,10 +649,10 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
         <span class="term-line">&nbsp;</span>
        
         <span class="term-line"><span class="comment">// Vulnerability Disclosure / Research Exchange:</span></span>
-        <span class="term-line"><span class="comment">// Join the Lab — Send resumes and technical writeups to:</span></span>
+        <span class="term-line"><span class="comment">// Join the Lab — Send resumes and technical work to:</span></span>
         <span class="term-line"><span class="out"> TH9261@outlook.com</span></span>
         <span class="term-line">&nbsp;</span>
-        <span class="term-line"><span class="comment">// No response to pure business/sales inquiries.</span></span>
+        <span class="term-line"><span class="comment">// No response to pure sales or marketing inquiries.</span></span>
         <span class="term-line">&nbsp;</span>
         <span class="term-line"><span class="out">[ STATUS: OPEN FOR RESEARCH COLLABORATION ]</span></span>
         <span class="term-line">&nbsp;</span>
@@ -665,7 +677,7 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
         </div>
         <div class="footer-tagline">
           Security Research Lab<br>
-          Hive Minded · Defense Oriented
+          Collective Intelligence · Proactive Defense
         </div>
       </div>
    
@@ -673,7 +685,7 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
         <div class="footer-status"><div class="status-dot"></div><span>All systems operational</span></div>
         <div class="footer-copy">
           © 2026 HiveCell Lab<br>
-          Coordinated Vulnerability Disclosure principles apply.<br>
+          Coordinated Disclosure Principles Apply.<br>
           Unauthorized access is strictly prohibited.
         </div>
       </div>
