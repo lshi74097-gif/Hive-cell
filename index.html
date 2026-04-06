@@ -705,11 +705,15 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 </style>
 <script>
-const items=[
-  {t:'SYSTEM ONLINE',b:false},{t:'研究方向 — 漏洞挖掘 · 逆向分析 · 工具开发',b:true},
-  {t:'HIVECELL LAB · 蜂巢实验室',b:false},{t:'OPEN FOR RESEARCH COLLABORATION',b:true},
-  {t:'CVE-2024-38193 — WINDOWS KERNEL — PUBLISHED',b:false},{t:'聚而成巢 · 学以致防',b:true},
-  {t:'NULLCHAIN TOOL — OPEN SOURCE RELEASED',b:false},{t:'PWN · CRYPTO · REVERSE · WEB',b:false},
+const items = [
+  { t: 'SYSTEM ONLINE', b: false },
+  { t: 'RESEARCH — VULN DISCOVERY · REVERSE ENGINEERING · TOOLING', b: true },
+  { t: 'HIVECELL LAB · SECURITY RESEARCH', b: false },
+  { t: 'OPEN FOR RESEARCH COLLABORATION', b: true },
+  { t: 'CVE-2024-38193 — WINDOWS KERNEL — PUBLISHED', b: false },
+  { t: 'Hacker', b: true },
+  { t: 'NULLCHAIN TOOL — OPEN SOURCE RELEASED', b: false },
+  { t: 'PWN · CRYPTO · REVERSE · WEB', b: false },
 ];
 const tk=document.getElementById('ticker');
 [...items,...items].forEach(item=>{
