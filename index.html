@@ -1,498 +1,1454 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HiveCell — Security Research Lab</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#ffffff;--bg2:#f7f7f5;--bg3:#f0efec;--bg4:#e8e7e3;
-  --black:#0a0a0a;--black2:#1a1a1a;
-  --text:#3a3a3a;--muted:#8a8a8a;--dim:#c8c8c8;
-  --border:#e0dedd;--border2:#d0cfcc;
-  --accent:#0a0a0a;
-  --font:'Courier New',Courier,monospace;
-  --serif:Georgia,'Times New Roman',serif;
-}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;overflow-x:hidden}
-::-webkit-scrollbar{width:3px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--black);border-radius:0}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HiveCell — Security Research Lab</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none}
-.bg-grid{
-  position:absolute;inset:0;
-  background-image:linear-gradient(rgba(0,0,0,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.035) 1px,transparent 1px);
-  background-size:60px 60px
-}
+    :root {
+      --bg: #ffffff;
+      --bg2: #f7f7f5;
+      --bg3: #f0efec;
+      --bg4: #e8e7e3;
+      --black: #0a0a0a;
+      --black2: #1a1a1a;
+      --text: #3a3a3a;
+      --muted: #8a8a8a;
+      --dim: #c8c8c8;
+      --border: #e0dedd;
+      --border2: #d0cfcc;
+      --accent: #0a0a0a;
+      --font: 'Courier New', Courier, monospace;
+      --serif: Georgia, 'Times New Roman', serif;
+    }
 
-.page{position:relative;z-index:1;max-width:1360px;margin:0 auto;padding:0 48px}
+    html {
+      scroll-behavior: smooth
+    }
 
-/* NAV */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  border-bottom:1px solid var(--border);
-  background:rgba(255,255,255,.94);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)
-}
-.nav-inner{
-  max-width:1360px;margin:0 auto;padding:0 48px;
-  display:flex;align-items:center;height:54px;gap:0
-}
-.nav-logo{display:flex;align-items:center;gap:12px;margin-right:48px;text-decoration:none;flex-shrink:0}
-.nav-logo-hex{
-  width:28px;height:28px;
-  display:flex;align-items:center;justify-content:center;
-  position:relative
-}
-.nav-logo-hex svg{width:28px;height:28px}
-.nav-logo-text{font-size:14px;font-weight:700;color:var(--black);letter-spacing:.12em;text-transform:uppercase;font-family:var(--serif)}
-.nav-logo-text b{font-style:italic}
-.nav-links{display:flex;gap:0;flex:1}
-.nav-link{
-  padding:0 18px;height:54px;display:flex;align-items:center;gap:6px;
-  font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
-  text-decoration:none;transition:all .2s;border-right:1px solid var(--border);position:relative
-}
-.nav-link:first-child{border-left:1px solid var(--border)}
-.nav-link .nl-num{color:var(--dim);font-size:9px}
-.nav-link:hover{color:var(--black);background:var(--bg2)}
-.nav-link.active{color:var(--black)}
-.nav-link.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--black)}
-.nav-right{margin-left:auto;display:flex;align-items:center;gap:20px;flex-shrink:0}
-.nav-status{display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.1em;color:var(--muted)}
-.status-dot{width:5px;height:5px;background:var(--black);border-radius:50%;animation:pulse 3s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
-.nav-cta{
-  padding:7px 18px;border:1px solid var(--black);
-  font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--black);
-  text-decoration:none;transition:all .2s;font-family:var(--font)
-}
-.nav-cta:hover{background:var(--black);color:#fff}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 13px;
+      overflow-x: hidden
+    }
 
-/* HERO */
-#hero{min-height:100vh;display:flex;align-items:center;padding-top:54px;position:relative}
-.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;width:100%}
-.hero-tag{
-  display:inline-flex;align-items:center;gap:8px;
-  font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);
-  margin-bottom:28px;border:1px solid var(--border);padding:6px 14px
-}
-h1.hero-title{
-  font-size:clamp(52px,6vw,88px);font-weight:700;line-height:.9;
-  letter-spacing:-.02em;color:var(--black);margin-bottom:8px;
-  font-family:var(--serif)
-}
-h1.hero-title .stroke{
-  -webkit-text-stroke:1.5px var(--black);color:transparent;display:block;font-style:italic
-}
-h1.hero-title .solid{color:var(--black);display:block}
-.hero-divider{height:1px;background:var(--black);width:80px;margin:24px 0}
-.hero-desc{font-size:13px;line-height:1.9;color:var(--text);max-width:420px;margin-bottom:36px;letter-spacing:.03em}
-.hero-desc b{color:var(--black)}
-.hero-btns{display:flex;gap:12px;margin-bottom:56px}
-.btn-primary{
-  padding:12px 32px;background:var(--black);color:#fff;
-  font-size:10px;letter-spacing:.15em;text-transform:uppercase;
-  font-family:var(--font);border:1px solid var(--black);cursor:pointer;
-  transition:all .2s
-}
-.btn-primary:hover{background:transparent;color:var(--black)}
-.btn-secondary{
-  padding:12px 32px;background:transparent;color:var(--text);
-  font-size:10px;letter-spacing:.15em;text-transform:uppercase;
-  font-family:var(--font);border:1px solid var(--border);cursor:pointer;transition:all .2s
-}
-.btn-secondary:hover{border-color:var(--black);color:var(--black)}
+    ::-webkit-scrollbar {
+      width: 3px
+    }
 
-/* hero right — honeycomb visual */
-.hero-right{display:flex;align-items:center;justify-content:center;position:relative}
-.hero-hex-wrap{position:relative;width:440px;height:440px}
-.hex-radar{
-  position:absolute;top:80px;left:80px;right:80px;bottom:80px;border-radius:50%;
-  border:1px solid var(--border2);
-  background:conic-gradient(from 0deg,transparent 280deg,rgba(0,0,0,.04) 360deg);
-  animation:radar 8s linear infinite
-}
-@keyframes radar{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.fdp{
-  position:absolute;font-size:9px;letter-spacing:.08em;color:var(--muted);
-  white-space:nowrap;animation:fdpblink 4s ease-in-out infinite;font-family:var(--font)
-}
-@keyframes fdpblink{0%,100%{opacity:.3}50%{opacity:.8}}
-.fdp b{color:var(--black)}
+    ::-webkit-scrollbar-track {
+      background: var(--bg)
+    }
 
-/* TICKER */
-.ticker-wrap{
-  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-  overflow:hidden;background:var(--bg2);padding:11px 0
-}
-.ticker-inner{display:flex;gap:0;white-space:nowrap;animation:tickerscroll 36s linear infinite}
-@keyframes tickerscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.tick-item{
-  display:inline-flex;align-items:center;gap:10px;padding:0 40px;
-  font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase
-}
-.tick-item .tk-dash{width:12px;height:1px;background:var(--dim);display:inline-block}
-.tick-item .tk-bold{color:var(--black)}
+    ::-webkit-scrollbar-thumb {
+      background: var(--black);
+      border-radius: 0
+    }
 
-/* SECTIONS */
-section{padding:100px 0}
-.sec-header{margin-bottom:64px}
-.sec-tag{
-  font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);
-  margin-bottom:14px;display:flex;align-items:center;gap:10px
-}
-.sec-tag::before{content:'';width:20px;height:1px;background:var(--black)}
-.sec-title{font-size:clamp(30px,3vw,44px);font-weight:700;color:var(--black);letter-spacing:.04em;text-transform:uppercase;line-height:1;font-family:var(--serif)}
-.sec-title em{font-style:italic;color:var(--muted)}
-.sec-sub{font-size:11px;color:var(--muted);margin-top:12px;letter-spacing:.06em;max-width:480px;line-height:1.8}
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none
+    }
 
-/* CAPABILITIES */
-#capabilities{border-top:1px solid var(--border)}
-.cap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
-.cap-card{
-  background:var(--bg);padding:36px 32px;position:relative;transition:background .2s;cursor:default
-}
-.cap-card:hover{background:var(--bg2)}
-.cap-card::before,.cap-card::after{
-  content:'';position:absolute;width:8px;height:8px;
-  border-color:var(--dim);border-style:solid;transition:border-color .2s
-}
-.cap-card::before{top:0;left:0;border-width:1px 0 0 1px}
-.cap-card::after{bottom:0;right:0;border-width:0 1px 1px 0}
-.cap-card:hover::before,.cap-card:hover::after{border-color:var(--black)}
-.cap-num{font-size:10px;color:var(--dim);letter-spacing:.1em;margin-bottom:24px}
-.cap-line{height:1px;background:var(--black);width:0;transition:width .4s ease;margin-bottom:20px}
-.cap-card:hover .cap-line{width:36px}
-.cap-name{font-size:15px;font-weight:700;color:var(--black);letter-spacing:.05em;text-transform:uppercase;margin-bottom:12px;line-height:1.2;font-family:var(--serif)}
-.cap-desc{font-size:11px;color:var(--muted);line-height:1.9;letter-spacing:.03em}
-.cap-tags{margin-top:22px;display:flex;flex-wrap:wrap;gap:5px}
-.cap-tag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--border);color:var(--muted)}
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(0, 0, 0, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, .035) 1px, transparent 1px);
+      background-size: 60px 60px
+    }
 
-/* RESEARCH */
-#research{border-top:1px solid var(--border);background:var(--bg)}
-.research-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border)}
-.res-card{
-  background:var(--bg);padding:32px;position:relative;
-  border-left:2px solid transparent;transition:all .2s
-}
-.res-card:hover{background:var(--bg2);border-left-color:var(--black)}
-.res-meta{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
-.res-type{font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;font-weight:700;border:1px solid var(--border2);color:var(--muted)}
-.res-type.cve{border-color:var(--black);color:var(--black)}
-.res-type.research{border-color:var(--muted)}
-.res-type.tool{border-color:var(--muted)}
-.res-type.advisory{border-color:var(--muted)}
-.res-date{font-size:9px;color:var(--dim);letter-spacing:.08em}
-.res-sev{font-size:9px;letter-spacing:.1em;margin-left:auto;color:var(--black);font-weight:700}
-.res-sev.low{color:var(--muted)}
-.res-title{font-size:15px;font-weight:700;color:var(--black);letter-spacing:.03em;margin-bottom:12px;line-height:1.35;text-transform:uppercase;font-family:var(--serif)}
-.res-desc{font-size:11px;color:var(--muted);line-height:1.9;letter-spacing:.03em}
-.res-footer{margin-top:22px;display:flex;align-items:center;justify-content:space-between}
-.res-author{font-size:10px;color:var(--muted);letter-spacing:.08em}
-.res-author span{color:var(--black)}
-.res-link{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--black);padding-bottom:1px;transition:opacity .2s}
-.res-link:hover{opacity:.5}
-.res-card.featured{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
-.res-card.featured .res-title{font-size:22px}
-.res-featured-visual{
-  height:210px;background:var(--bg3);border:1px solid var(--border2);
-  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden
-}
-.rfv-text{font-size:11px;color:var(--muted);letter-spacing:.06em;font-family:var(--font);white-space:pre;line-height:1.7}
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 0 48px
+    }
 
-/* TEAM */
-#team{border-top:1px solid var(--border)}
-.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
-.team-card{background:var(--bg);padding:32px 28px;transition:background .2s;position:relative}
-.team-card:hover{background:var(--bg2)}
-.team-card::before,.team-card::after{
-  content:'';position:absolute;width:8px;height:8px;
-  border-color:var(--dim);border-style:solid;transition:border-color .3s
-}
-.team-card::before{top:0;left:0;border-width:1px 0 0 1px}
-.team-card::after{bottom:0;right:0;border-width:0 1px 1px 0}
-.team-card:hover::before,.team-card:hover::after{border-color:var(--black)}
-.team-avatar{
-  width:56px;height:56px;border:1px solid var(--border2);
-  display:flex;align-items:center;justify-content:center;
-  margin-bottom:18px;background:var(--bg3)
-}
-.team-handle{font-size:14px;font-weight:700;color:var(--black);letter-spacing:.06em;margin-bottom:4px;font-family:var(--serif)}
-.team-role{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:12px}
-.team-bio{font-size:10px;color:var(--muted);line-height:1.9;letter-spacing:.03em}
-.team-skills{margin-top:16px;display:flex;flex-wrap:wrap;gap:5px}
-.tsk{font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border:1px solid var(--border);color:var(--muted)}
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, .94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px)
+    }
 
-/* TERMINAL */
-#terminal{border-top:1px solid var(--border);background:var(--bg2)}
-.term-wrap{border:1px solid var(--border2);background:var(--bg);position:relative}
-.term-wrap::before,.term-wrap::after{
-  content:'';position:absolute;width:8px;height:8px;
-  border-color:var(--black);border-style:solid;z-index:2
-}
-.term-wrap::before{top:-1px;left:-1px;border-width:1px 0 0 1px}
-.term-wrap::after{bottom:-1px;right:-1px;border-width:0 1px 1px 0}
-.term-bar{
-  display:flex;align-items:center;gap:8px;padding:10px 18px;
-  border-bottom:1px solid var(--border2);background:var(--bg3)
-}
-.term-dot{width:8px;height:8px;border-radius:50%}
-.term-title{font-size:10px;color:var(--muted);letter-spacing:.08em;margin:0 auto}
-.term-body{padding:32px 28px;min-height:200px;font-size:12px;line-height:2.1;letter-spacing:.04em}
-.term-line{display:block;color:var(--muted)}
-.term-line .prompt{color:var(--black)}
-.term-line .cmd{color:var(--black)}
-.term-line .out{color:var(--text)}
-.term-line .comment{color:var(--dim)}
-.term-cursor{display:inline-block;width:8px;height:14px;background:var(--black);margin-left:2px;vertical-align:middle;animation:blink 1s step-end infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+    .nav-inner {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 0 48px;
+      display: flex;
+      align-items: center;
+      height: 54px;
+      gap: 0
+    }
 
-/* FOOTER */
-footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
-.footer-inner{display:grid;grid-template-columns:1fr 2fr 1fr;gap:64px;align-items:start}
-.footer-logo{margin-bottom:14px;display:flex;align-items:center;gap:12px}
-.footer-hex{width:30px;height:30px;display:flex;align-items:center;justify-content:center}
-.footer-name{font-size:16px;font-weight:700;color:var(--black);letter-spacing:.1em;text-transform:uppercase;font-family:var(--serif)}
-.footer-name em{font-style:italic;color:var(--muted)}
-.footer-tagline{font-size:10px;color:var(--muted);letter-spacing:.08em;line-height:1.9;margin-top:8px}
-.footer-links{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
-.fl-group-title{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--black);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-.fl-link{display:block;font-size:10px;color:var(--muted);letter-spacing:.08em;text-decoration:none;padding:4px 0;transition:color .2s}
-.fl-link:hover{color:var(--black)}
-.footer-right{text-align:right}
-.footer-status{display:flex;justify-content:flex-end;align-items:center;gap:7px;font-size:10px;letter-spacing:.1em;color:var(--muted);margin-bottom:14px}
-.footer-copy{font-size:9px;color:var(--dim);letter-spacing:.1em;line-height:2.1}
-.footer-bottom{
-  margin-top:48px;padding-top:20px;border-top:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between
-}
-.fb-left{font-size:9px;color:var(--dim);letter-spacing:.1em}
-.fb-right{display:flex;gap:24px}
-.fb-link{font-size:9px;color:var(--dim);letter-spacing:.1em;text-decoration:none;transition:color .2s}
-.fb-link:hover{color:var(--black)}
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-right: 48px;
+      text-decoration: none;
+      flex-shrink: 0
+    }
 
-.fade-in{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
-.fade-in.visible{opacity:1;transform:translateY(0)}
+    .nav-logo-hex {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative
+    }
 
-@media(max-width:960px){
-  .hero-inner{grid-template-columns:1fr}
-  .hero-right{display:none}
-  .cap-grid{grid-template-columns:1fr 1fr}
-  .team-grid{grid-template-columns:1fr 1fr}
-  .footer-inner{grid-template-columns:1fr}
-  .research-grid{grid-template-columns:1fr}
-  .res-card.featured{grid-column:span 1;display:block}
-  .page{padding:0 24px}
-}
-</style>
+    .nav-logo-hex svg {
+      width: 28px;
+      height: 28px
+    }
+
+    .nav-logo-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--black);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-family: var(--serif)
+    }
+
+    .nav-logo-text b {
+      font-style: italic
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0;
+      flex: 1
+    }
+
+    .nav-link {
+      padding: 0 18px;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: all .2s;
+      border-right: 1px solid var(--border);
+      position: relative
+    }
+
+    .nav-link:first-child {
+      border-left: 1px solid var(--border)
+    }
+
+    .nav-link .nl-num {
+      color: var(--dim);
+      font-size: 9px
+    }
+
+    .nav-link:hover {
+      color: var(--black);
+      background: var(--bg2)
+    }
+
+    .nav-link.active {
+      color: var(--black)
+    }
+
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--black)
+    }
+
+    .nav-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-shrink: 0
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 10px;
+      letter-spacing: .1em;
+      color: var(--muted)
+    }
+
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--black);
+      border-radius: 50%;
+      animation: pulse 3s ease-in-out infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .2
+      }
+    }
+
+    .nav-cta {
+      padding: 7px 18px;
+      border: 1px solid var(--black);
+      font-size: 9px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      transition: all .2s;
+      font-family: var(--font)
+    }
+
+    .nav-cta:hover {
+      background: var(--black);
+      color: #fff
+    }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 54px;
+      position: relative
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      width: 100%
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+      border: 1px solid var(--border);
+      padding: 6px 14px
+    }
+
+    h1.hero-title {
+      font-size: clamp(52px, 6vw, 88px);
+      font-weight: 700;
+      line-height: .9;
+      letter-spacing: -.02em;
+      color: var(--black);
+      margin-bottom: 8px;
+      font-family: var(--serif)
+    }
+
+    h1.hero-title .stroke {
+      -webkit-text-stroke: 1.5px var(--black);
+      color: transparent;
+      display: block;
+      font-style: italic
+    }
+
+    h1.hero-title .solid {
+      color: var(--black);
+      display: block
+    }
+
+    .hero-divider {
+      height: 1px;
+      background: var(--black);
+      width: 80px;
+      margin: 24px 0
+    }
+
+    .hero-desc {
+      font-size: 13px;
+      line-height: 1.9;
+      color: var(--text);
+      max-width: 420px;
+      margin-bottom: 36px;
+      letter-spacing: .03em
+    }
+
+    .hero-desc b {
+      color: var(--black)
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 56px
+    }
+
+    .btn-primary {
+      padding: 12px 32px;
+      background: var(--black);
+      color: #fff;
+      font-size: 10px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      font-family: var(--font);
+      border: 1px solid var(--black);
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--black)
+    }
+
+    .btn-secondary {
+      padding: 12px 32px;
+      background: transparent;
+      color: var(--text);
+      font-size: 10px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      font-family: var(--font);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--black);
+      color: var(--black)
+    }
+
+    /* hero right — honeycomb visual */
+    .hero-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative
+    }
+
+    .hero-hex-wrap {
+      position: relative;
+      width: 440px;
+      height: 440px
+    }
+
+    .hex-radar {
+      position: absolute;
+      top: 80px;
+      left: 80px;
+      right: 80px;
+      bottom: 80px;
+      border-radius: 50%;
+      border: 1px solid var(--border2);
+      background: conic-gradient(from 0deg, transparent 280deg, rgba(0, 0, 0, .04) 360deg);
+      animation: radar 8s linear infinite
+    }
+
+    @keyframes radar {
+      from {
+        transform: rotate(0deg)
+      }
+
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .fdp {
+      position: absolute;
+      font-size: 9px;
+      letter-spacing: .08em;
+      color: var(--muted);
+      white-space: nowrap;
+      animation: fdpblink 4s ease-in-out infinite;
+      font-family: var(--font)
+    }
+
+    @keyframes fdpblink {
+
+      0%,
+      100% {
+        opacity: .3
+      }
+
+      50% {
+        opacity: .8
+      }
+    }
+
+    .fdp b {
+      color: var(--black)
+    }
+
+    /* TICKER */
+    .ticker-wrap {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      background: var(--bg2);
+      padding: 11px 0
+    }
+
+    .ticker-inner {
+      display: flex;
+      gap: 0;
+      white-space: nowrap;
+      animation: tickerscroll 36s linear infinite
+    }
+
+    @keyframes tickerscroll {
+      from {
+        transform: translateX(0)
+      }
+
+      to {
+        transform: translateX(-50%)
+      }
+    }
+
+    .tick-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 40px;
+      font-size: 10px;
+      letter-spacing: .12em;
+      color: var(--muted);
+      text-transform: uppercase
+    }
+
+    .tick-item .tk-dash {
+      width: 12px;
+      height: 1px;
+      background: var(--dim);
+      display: inline-block
+    }
+
+    .tick-item .tk-bold {
+      color: var(--black)
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 100px 0
+    }
+
+    .sec-header {
+      margin-bottom: 64px
+    }
+
+    .sec-tag {
+      font-size: 9px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .sec-tag::before {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--black)
+    }
+
+    .sec-title {
+      font-size: clamp(30px, 3vw, 44px);
+      font-weight: 700;
+      color: var(--black);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      line-height: 1;
+      font-family: var(--serif)
+    }
+
+    .sec-title em {
+      font-style: italic;
+      color: var(--muted)
+    }
+
+    .sec-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 12px;
+      letter-spacing: .06em;
+      max-width: 480px;
+      line-height: 1.8
+    }
+
+    /* CAPABILITIES */
+    #capabilities {
+      border-top: 1px solid var(--border)
+    }
+
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border)
+    }
+
+    .cap-card {
+      background: var(--bg);
+      padding: 36px 32px;
+      position: relative;
+      transition: background .2s;
+      cursor: default
+    }
+
+    .cap-card:hover {
+      background: var(--bg2)
+    }
+
+    .cap-card::before,
+    .cap-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: var(--dim);
+      border-style: solid;
+      transition: border-color .2s
+    }
+
+    .cap-card::before {
+      top: 0;
+      left: 0;
+      border-width: 1px 0 0 1px
+    }
+
+    .cap-card::after {
+      bottom: 0;
+      right: 0;
+      border-width: 0 1px 1px 0
+    }
+
+    .cap-card:hover::before,
+    .cap-card:hover::after {
+      border-color: var(--black)
+    }
+
+    .cap-num {
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: .1em;
+      margin-bottom: 24px
+    }
+
+    .cap-line {
+      height: 1px;
+      background: var(--black);
+      width: 0;
+      transition: width .4s ease;
+      margin-bottom: 20px
+    }
+
+    .cap-card:hover .cap-line {
+      width: 36px
+    }
+
+    .cap-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--black);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      line-height: 1.2;
+      font-family: var(--serif)
+    }
+
+    .cap-desc {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.9;
+      letter-spacing: .03em
+    }
+
+    .cap-tags {
+      margin-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px
+    }
+
+    .cap-tag {
+      font-size: 9px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid var(--border);
+      color: var(--muted)
+    }
+
+    /* RESEARCH */
+    #research {
+      border-top: 1px solid var(--border);
+      background: var(--bg)
+    }
+
+    .research-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border)
+    }
+
+    .res-card {
+      background: var(--bg);
+      padding: 32px;
+      position: relative;
+      border-left: 2px solid transparent;
+      transition: all .2s
+    }
+
+    .res-card:hover {
+      background: var(--bg2);
+      border-left-color: var(--black)
+    }
+
+    .res-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap
+    }
+
+    .res-type {
+      font-size: 9px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      font-weight: 700;
+      border: 1px solid var(--border2);
+      color: var(--muted)
+    }
+
+    .res-type.cve {
+      border-color: var(--black);
+      color: var(--black)
+    }
+
+    .res-type.research {
+      border-color: var(--muted)
+    }
+
+    .res-type.tool {
+      border-color: var(--muted)
+    }
+
+    .res-type.advisory {
+      border-color: var(--muted)
+    }
+
+    .res-date {
+      font-size: 9px;
+      color: var(--dim);
+      letter-spacing: .08em
+    }
+
+    .res-sev {
+      font-size: 9px;
+      letter-spacing: .1em;
+      margin-left: auto;
+      color: var(--black);
+      font-weight: 700
+    }
+
+    .res-sev.low {
+      color: var(--muted)
+    }
+
+    .res-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--black);
+      letter-spacing: .03em;
+      margin-bottom: 12px;
+      line-height: 1.35;
+      text-transform: uppercase;
+      font-family: var(--serif)
+    }
+
+    .res-desc {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.9;
+      letter-spacing: .03em
+    }
+
+    .res-footer {
+      margin-top: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .res-author {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: .08em
+    }
+
+    .res-author span {
+      color: var(--black)
+    }
+
+    .res-link {
+      font-size: 9px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 1px;
+      transition: opacity .2s
+    }
+
+    .res-link:hover {
+      opacity: .5
+    }
+
+    .res-card.featured {
+      grid-column: span 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center
+    }
+
+    .res-card.featured .res-title {
+      font-size: 22px
+    }
+
+    .res-featured-visual {
+      height: 210px;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden
+    }
+
+    .rfv-text {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: .06em;
+      font-family: var(--font);
+      white-space: pre;
+      line-height: 1.7
+    }
+
+    /* TEAM */
+    #team {
+      border-top: 1px solid var(--border)
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border)
+    }
+
+    .team-card {
+      background: var(--bg);
+      padding: 32px 28px;
+      transition: background .2s;
+      position: relative
+    }
+
+    .team-card:hover {
+      background: var(--bg2)
+    }
+
+    .team-card::before,
+    .team-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: var(--dim);
+      border-style: solid;
+      transition: border-color .3s
+    }
+
+    .team-card::before {
+      top: 0;
+      left: 0;
+      border-width: 1px 0 0 1px
+    }
+
+    .team-card::after {
+      bottom: 0;
+      right: 0;
+      border-width: 0 1px 1px 0
+    }
+
+    .team-card:hover::before,
+    .team-card:hover::after {
+      border-color: var(--black)
+    }
+
+    .team-avatar {
+      width: 56px;
+      height: 56px;
+      border: 1px solid var(--border2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      background: var(--bg3)
+    }
+
+    .team-handle {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--black);
+      letter-spacing: .06em;
+      margin-bottom: 4px;
+      font-family: var(--serif)
+    }
+
+    .team-role {
+      font-size: 9px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px
+    }
+
+    .team-bio {
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.9;
+      letter-spacing: .03em
+    }
+
+    .team-skills {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px
+    }
+
+    .tsk {
+      font-size: 8px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 3px 7px;
+      border: 1px solid var(--border);
+      color: var(--muted)
+    }
+
+    /* TERMINAL */
+    #terminal {
+      border-top: 1px solid var(--border);
+      background: var(--bg2)
+    }
+
+    .term-wrap {
+      border: 1px solid var(--border2);
+      background: var(--bg);
+      position: relative
+    }
+
+    .term-wrap::before,
+    .term-wrap::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: var(--black);
+      border-style: solid;
+      z-index: 2
+    }
+
+    .term-wrap::before {
+      top: -1px;
+      left: -1px;
+      border-width: 1px 0 0 1px
+    }
+
+    .term-wrap::after {
+      bottom: -1px;
+      right: -1px;
+      border-width: 0 1px 1px 0
+    }
+
+    .term-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-bottom: 1px solid var(--border2);
+      background: var(--bg3)
+    }
+
+    .term-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%
+    }
+
+    .term-title {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: .08em;
+      margin: 0 auto
+    }
+
+    .term-body {
+      padding: 32px 28px;
+      min-height: 200px;
+      font-size: 12px;
+      line-height: 2.1;
+      letter-spacing: .04em
+    }
+
+    .term-line {
+      display: block;
+      color: var(--muted)
+    }
+
+    .term-line .prompt {
+      color: var(--black)
+    }
+
+    .term-line .cmd {
+      color: var(--black)
+    }
+
+    .term-line .out {
+      color: var(--text)
+    }
+
+    .term-line .comment {
+      color: var(--dim)
+    }
+
+    .term-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: var(--black);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0
+      }
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border2);
+      background: var(--bg2);
+      padding: 56px 0
+    }
+
+    .footer-inner {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      gap: 64px;
+      align-items: start
+    }
+
+    .footer-logo {
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .footer-hex {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .footer-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--black);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-family: var(--serif)
+    }
+
+    .footer-name em {
+      font-style: italic;
+      color: var(--muted)
+    }
+
+    .footer-tagline {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: .08em;
+      line-height: 1.9;
+      margin-top: 8px
+    }
+
+    .footer-links {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 36px
+    }
+
+    .fl-group-title {
+      font-size: 9px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .fl-link {
+      display: block;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: .08em;
+      text-decoration: none;
+      padding: 4px 0;
+      transition: color .2s
+    }
+
+    .fl-link:hover {
+      color: var(--black)
+    }
+
+    .footer-right {
+      text-align: right
+    }
+
+    .footer-status {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 7px;
+      font-size: 10px;
+      letter-spacing: .1em;
+      color: var(--muted);
+      margin-bottom: 14px
+    }
+
+    .footer-copy {
+      font-size: 9px;
+      color: var(--dim);
+      letter-spacing: .1em;
+      line-height: 2.1
+    }
+
+    .footer-bottom {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .fb-left {
+      font-size: 9px;
+      color: var(--dim);
+      letter-spacing: .1em
+    }
+
+    .fb-right {
+      display: flex;
+      gap: 24px
+    }
+
+    .fb-link {
+      font-size: 9px;
+      color: var(--dim);
+      letter-spacing: .1em;
+      text-decoration: none;
+      transition: color .2s
+    }
+
+    .fb-link:hover {
+      color: var(--black)
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity .6s ease, transform .6s ease
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    @media(max-width:960px) {
+      .hero-inner {
+        grid-template-columns: 1fr
+      }
+
+      .hero-right {
+        display: none
+      }
+
+      .cap-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .team-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr
+      }
+
+      .research-grid {
+        grid-template-columns: 1fr
+      }
+
+      .res-card.featured {
+        grid-column: span 1;
+        display: block
+      }
+
+      .page {
+        padding: 0 24px
+      }
+    }
+
+    .hive-img {
+      height: 400px;
+      width: 600px;
+      margin-right: 100%;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="bg-layer"><div class="bg-grid">HIVECELL</div></div>
-
-<nav>
-  <div class="nav-inner">
-    <a href="#" class="nav-logo">
-      <div class="nav-logo-hex">
-        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="14,2 24,7.5 24,20.5 14,26 4,20.5 4,7.5" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="1"/>
-          <text x="14" y="18.5" text-anchor="middle" font-family="Georgia,serif" font-size="11" font-weight="700" fill="#ffffff" font-style="italic">F</text>
-        </svg>
-      </div>
-      <span class="nav-logo-text">Hive<b>Cell</b></span>
-    </a>
-    <div class="nav-links">
-      <a href="#capabilities" class="nav-link"><span class="nl-num">01</span> Research</a>
-      <a href="#research" class="nav-link"><span class="nl-num">02</span> Deep Dives</a>
-      <a href="#team" class="nav-link"><span class="nl-num">03</span> Members</a>
-      <a href="#terminal" class="nav-link"><span class="nl-num">04</span> Contact</a>
-    </div>
-    <div class="nav-right">
-      <div class="nav-status"><div class="status-dot"></div><span>ACTIVE</span></div>
-      <a href="#terminal" class="nav-cta">Join Us</a>
-    </div>
+  <div class="bg-layer">
+    <div class="bg-grid">HIVECELL</div>
   </div>
-</nav>
 
-<section id="hero">
-  <div class="page">
-    <div class="hero-inner">
-      <div class="hero-left">
-        <div class="hero-tag">Security Research Lab </div>
-        <h1 class="hero-title">
-          <span class="stroke">Hive</span>
-          <span class="solid">Cell</span>
-        </h1>
-        <div class="hero-divider"></div>
-       <p class="hero-desc">
-  An independent laboratory dedicated to offensive and defensive cybersecurity research. We focus on <b>vulnerability discovery</b>, <b>reverse engineering</b>, and <b>security tool development</b>—building knowledge and honing our craft within an environment of open collaboration.
-</p>
-      <div class="hero-btns">
-  <button class="btn-primary" onclick="document.getElementById('research').scrollIntoView({behavior:'smooth'})">View Research</button>
-  <button class="btn-secondary" onclick="document.getElementById('capabilities').scrollIntoView({behavior:'smooth'})">Research Areas</button>
-</div>
-
-      <div class="hero-right">
-        <div class="hero-hex-wrap">
-          <div class="fdp" style="top:10%;left:58%"><b>SYS:</b> ONLINE</div>
-          <div class="fdp" style="top:22%;right:2%;animation-delay:.6s"><b>LAB</b> · HIVECELL</div>
-          <div class="fdp" style="bottom:28%;left:2%;animation-delay:1.2s"><b>RES</b> · ACTIVE</div>
-          <div class="fdp" style="bottom:12%;left:52%;animation-delay:1.8s"><b>SEC</b> · LAB</div>
-          <div class="fdp" style="top:50%;right:4%;animation-delay:.9s"><b>DEF</b> · ON ✓</div>
-          <div class="hex-radar"></div>
-          <svg width="100%" viewBox="0 0 440 440" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="220" cy="220" r="200" stroke="#e0dedd" stroke-width="1"/>
-            <circle cx="220" cy="220" r="200" stroke="#0a0a0a" stroke-width=".5" stroke-dasharray="4 8" opacity=".25" style="transform-origin:220px 220px;animation:spin 40s linear infinite"/>
-            <circle cx="220" cy="220" r="165" stroke="#e0dedd" stroke-width="1"/>
-            <circle cx="220" cy="220" r="165" stroke="#0a0a0a" stroke-width=".5" stroke-dasharray="2 12" opacity=".2" style="transform-origin:220px 220px;animation:spin 24s linear infinite reverse"/>
-            <circle cx="220" cy="220" r="120" stroke="#0a0a0a" stroke-width=".4" opacity=".15"/>
-            <line x1="220" y1="100" x2="220" y2="340" stroke="#e8e7e3" stroke-width=".5"/>
-            <line x1="100" y1="220" x2="340" y2="220" stroke="#e8e7e3" stroke-width=".5"/>
-            <g opacity=".6" style="transform-origin:220px 220px;animation:spin 50s linear infinite">
-              <line x1="220" y1="56" x2="220" y2="38" stroke="#0a0a0a" stroke-width="1.5"/>
-              <line x1="220" y1="58" x2="220" y2="44" stroke="#0a0a0a" stroke-width="1" transform="rotate(15 220 220)"/>
-              <line x1="220" y1="54" x2="220" y2="36" stroke="#0a0a0a" stroke-width="2" transform="rotate(30 220 220)"/>
-              <line x1="220" y1="60" x2="220" y2="48" stroke="#0a0a0a" stroke-width=".8" transform="rotate(45 220 220)"/>
-              <line x1="220" y1="52" x2="220" y2="34" stroke="#0a0a0a" stroke-width="2.5" transform="rotate(60 220 220)"/>
-              <line x1="220" y1="58" x2="220" y2="46" stroke="#0a0a0a" stroke-width=".8" transform="rotate(75 220 220)"/>
-              <line x1="220" y1="55" x2="220" y2="38" stroke="#0a0a0a" stroke-width="1.5" transform="rotate(90 220 220)"/>
-              <line x1="220" y1="60" x2="220" y2="50" stroke="#0a0a0a" stroke-width=".8" transform="rotate(105 220 220)"/>
-              <line x1="220" y1="50" x2="220" y2="30" stroke="#0a0a0a" stroke-width="3" transform="rotate(120 220 220)"/>
-              <line x1="220" y1="58" x2="220" y2="46" stroke="#0a0a0a" stroke-width=".8" transform="rotate(135 220 220)"/>
-              <line x1="220" y1="55" x2="220" y2="40" stroke="#0a0a0a" stroke-width="1.5" transform="rotate(150 220 220)"/>
-              <line x1="220" y1="60" x2="220" y2="50" stroke="#0a0a0a" stroke-width=".8" transform="rotate(165 220 220)"/>
-              <line x1="220" y1="48" x2="220" y2="28" stroke="#0a0a0a" stroke-width="3" transform="rotate(180 220 220)"/>
-              <line x1="220" y1="58" x2="220" y2="46" stroke="#0a0a0a" stroke-width=".8" transform="rotate(195 220 220)"/>
-              <line x1="220" y1="56" x2="220" y2="40" stroke="#0a0a0a" stroke-width="1.5" transform="rotate(210 220 220)"/>
-              <line x1="220" y1="60" x2="220" y2="50" stroke="#0a0a0a" stroke-width=".8" transform="rotate(225 220 220)"/>
-              <line x1="220" y1="52" x2="220" y2="34" stroke="#0a0a0a" stroke-width="2" transform="rotate(240 220 220)"/>
-              <line x1="220" y1="58" x2="220" y2="46" stroke="#0a0a0a" stroke-width=".8" transform="rotate(255 220 220)"/>
-              <line x1="220" y1="54" x2="220" y2="38" stroke="#0a0a0a" stroke-width="2" transform="rotate(270 220 220)"/>
-              <line x1="220" y1="60" x2="220" y2="50" stroke="#0a0a0a" stroke-width=".8" transform="rotate(285 220 220)"/>
-              <line x1="220" y1="48" x2="220" y2="30" stroke="#0a0a0a" stroke-width="2.5" transform="rotate(300 220 220)"/>
-              <line x1="220" y1="58" x2="220" y2="46" stroke="#0a0a0a" stroke-width=".8" transform="rotate(315 220 220)"/>
-              <line x1="220" y1="55" x2="220" y2="38" stroke="#0a0a0a" stroke-width="2" transform="rotate(330 220 220)"/>
-              <line x1="220" y1="60" x2="220" y2="50" stroke="#0a0a0a" stroke-width=".8" transform="rotate(345 220 220)"/>
-            </g>
-            <rect x="212" y="212" width="16" height="16" stroke="#0a0a0a" stroke-width="1" fill="none" transform="rotate(45 220 220)" style="transform-origin:220px 220px;animation:spin 10s linear infinite"/>
-            <rect x="216" y="216" width="8" height="8" fill="#0a0a0a" transform="rotate(45 220 220)" opacity=".9"/>
-            <circle cx="220" cy="90" r="3" fill="#0a0a0a" opacity=".6"/>
-            <circle cx="350" cy="220" r="2" fill="#0a0a0a" opacity=".4"/>
-            <circle cx="220" cy="350" r="3" fill="#0a0a0a" opacity=".6"/>
-            <circle cx="90" cy="220" r="2" fill="#0a0a0a" opacity=".4"/>
-            <circle cx="275" cy="115" r="2" fill="#0a0a0a" opacity=".35"/>
-            <line x1="220" y1="90" x2="275" y2="115" stroke="#0a0a0a" stroke-width=".5" opacity=".2"/>
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-hex">
+          <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="14,2 24,7.5 24,20.5 14,26 4,20.5 4,7.5" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="1" />
+            <text x="14" y="18.5" text-anchor="middle" font-family="Georgia,serif" font-size="11" font-weight="700"
+              fill="#ffffff" font-style="italic">F</text>
           </svg>
-          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
-            <span style="font-size:9px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:8px">Unit</span>
-            <span style="font-size:18px;font-weight:700;color:var(--black);letter-spacing:.08em;text-transform:uppercase;display:block;font-family:var(--serif)">HiveCell</span>
-            <span style="font-size:9px;color:var(--muted);letter-spacing:.15em;margin-top:6px;display:block">SEC-LAB-001</span>
+        </div>
+        <span class="nav-logo-text">Hive<b>Cell</b></span>
+      </a>
+      <div class="nav-links">
+        <a href="#capabilities" class="nav-link"><span class="nl-num">01</span> Research</a>
+        <a href="#research" class="nav-link"><span class="nl-num">02</span> Deep Dives</a>
+        <a href="#team" class="nav-link"><span class="nl-num">03</span> Members</a>
+        <a href="#terminal" class="nav-link"><span class="nl-num">04</span> Contact</a>
+      </div>
+      <div class="nav-right">
+        <div class="nav-status">
+          <div class="status-dot"></div><span>ACTIVE</span>
+        </div>
+        <a href="#terminal" class="nav-cta">Join Us</a>
+      </div>
+    </div>
+  </nav>
+
+  <section id="hero">
+    <div class="page">
+      <div class="hero-inner">
+        <div class="hero-left">
+          <div class="hero-tag">Security Research Lab </div>
+          <h1 class="hero-title">
+            <span class="stroke">Hive</span>
+            <span class="solid">Cell</span>
+          </h1>
+          <div class="hero-divider"></div>
+          <p class="hero-desc">
+            An independent laboratory dedicated to offensive and defensive cybersecurity research. We focus on
+            <b>vulnerability discovery</b>, <b>reverse engineering</b>, and <b>security tool development</b>—building
+            knowledge and honing our craft within an environment of open collaboration.
+            <img class="hero-inner" src="img/hivecell.png" alt="">
+          </p>
+
+          <div class="hero-btns">
+            <button class="btn-primary"
+              onclick="document.getElementById('research').scrollIntoView({behavior:'smooth'})">View Research</button>
+            <button class="btn-secondary"
+              onclick="document.getElementById('capabilities').scrollIntoView({behavior:'smooth'})">Research
+              Areas</button>
+          </div>
+
+          <div class="hero-right">
+            <div class="hero-hex-wrap">
+              <div class="fdp" style="top:10%;left:58%"><b>SYS:</b> ONLINE</div>
+              <div class="fdp" style="top:22%;right:2%;animation-delay:.6s"><b>LAB</b> · HIVECELL</div>
+              <div class="fdp" style="bottom:28%;left:2%;animation-delay:1.2s"><b>RES</b> · ACTIVE</div>
+              <div class="fdp" style="bottom:12%;left:52%;animation-delay:1.8s"><b>SEC</b> · LAB</div>
+              <div class="fdp" style="top:50%;right:4%;animation-delay:.9s"><b>DEF</b> · ON ✓</div>
+              <div class="hex-radar"></div>
+              <svg width="100%" viewBox="0 0 440 440" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="220" cy="220" r="200" stroke="#e0dedd" stroke-width="1" />
+                <circle cx="220" cy="220" r="200" stroke="#0a0a0a" stroke-width=".5" stroke-dasharray="4 8"
+                  opacity=".25" style="transform-origin:220px 220px;animation:spin 40s linear infinite" />
+                <circle cx="220" cy="220" r="165" stroke="#e0dedd" stroke-width="1" />
+                <circle cx="220" cy="220" r="165" stroke="#0a0a0a" stroke-width=".5" stroke-dasharray="2 12"
+                  opacity=".2" style="transform-origin:220px 220px;animation:spin 24s linear infinite reverse" />
+                <circle cx="220" cy="220" r="120" stroke="#0a0a0a" stroke-width=".4" opacity=".15" />
+                <line x1="220" y1="100" x2="220" y2="340" stroke="#e8e7e3" stroke-width=".5" />
+                <line x1="100" y1="220" x2="340" y2="220" stroke="#e8e7e3" stroke-width=".5" />
+                <g opacity=".6" style="transform-origin:220px 220px;animation:spin 50s linear infinite">
+                  <line x1="220" y1="56" x2="220" y2="38" stroke="#0a0a0a" stroke-width="1.5" />
+                  <line x1="220" y1="58" x2="220" y2="44" stroke="#0a0a0a" stroke-width="1"
+                    transform="rotate(15 220 220)" />
+                  <line x1="220" y1="54" x2="220" y2="36" stroke="#0a0a0a" stroke-width="2"
+                    transform="rotate(30 220 220)" />
+                  <line x1="220" y1="60" x2="220" y2="48" stroke="#0a0a0a" stroke-width=".8"
+                    transform="rotate(45 220 220)" />
+                  <line x1="220" y1="52" x2="220" y2="34" stroke="#0a0a0a" stroke-width="2.5"
+                    transform="rotate(60 220 220)" />
+                  <line x1="220" y1="58" x2="220" y2="46" stroke="#0a0a0a" stroke-width=".8"
+                    transform="rotate(75 220 220)" />
+                  <line x1="220" y1="55" x2="220" y2="38" stroke="#0a0a0a" stroke-width="1.5"
+                    transform="rotate(90 220 220)" />
+                  <line x1="220" y1="60" x2="220" y2="50" stroke="#0a0a0a" stroke-width=".8"
+                    transform="rotate(105 220 220)" />
+                  <line x1="220" y1="50" x2="220" y2="30" stroke="#0a0a0a" stroke-width="3"
+                    transform="rotate(120 220 220)" />
+                  <line x1="220" y1="58" x2="220" y2="46" stroke="#0a0a0a" stroke-width=".8"
+                    transform="rotate(135 220 220)" />
+                  <line x1="220" y1="55" x2="220" y2="40" stroke="#0a0a0a" stroke-width="1.5"
+                    transform="rotate(150 220 220)" />
+                  <line x1="220" y1="60" x2="220" y2="50" stroke="#0a0a0a" stroke-width=".8"
+                    transform="rotate(165 220 220)" />
+                  <line x1="220" y1="48" x2="220" y2="28" stroke="#0a0a0a" stroke-width="3"
+                    transform="rotate(180 220 220)" />
+                  <line x1="220" y1="58" x2="220" y2="46" stroke="#0a0a0a" stroke-width=".8"
+                    transform="rotate(195 220 220)" />
+                  <line x1="220" y1="56" x2="220" y2="40" stroke="#0a0a0a" stroke-width="1.5"
+                    transform="rotate(210 220 220)" />
+                  <line x1="220" y1="60" x2="220" y2="50" stroke="#0a0a0a" stroke-width=".8"
+                    transform="rotate(225 220 220)" />
+                  <line x1="220" y1="52" x2="220" y2="34" stroke="#0a0a0a" stroke-width="2"
+                    transform="rotate(240 220 220)" />
+                  <line x1="220" y1="58" x2="220" y2="46" stroke="#0a0a0a" stroke-width=".8"
+                    transform="rotate(255 220 220)" />
+                  <line x1="220" y1="54" x2="220" y2="38" stroke="#0a0a0a" stroke-width="2"
+                    transform="rotate(270 220 220)" />
+                  <line x1="220" y1="60" x2="220" y2="50" stroke="#0a0a0a" stroke-width=".8"
+                    transform="rotate(285 220 220)" />
+                  <line x1="220" y1="48" x2="220" y2="30" stroke="#0a0a0a" stroke-width="2.5"
+                    transform="rotate(300 220 220)" />
+                  <line x1="220" y1="58" x2="220" y2="46" stroke="#0a0a0a" stroke-width=".8"
+                    transform="rotate(315 220 220)" />
+                  <line x1="220" y1="55" x2="220" y2="38" stroke="#0a0a0a" stroke-width="2"
+                    transform="rotate(330 220 220)" />
+                  <line x1="220" y1="60" x2="220" y2="50" stroke="#0a0a0a" stroke-width=".8"
+                    transform="rotate(345 220 220)" />
+                </g>
+                <rect x="212" y="212" width="16" height="16" stroke="#0a0a0a" stroke-width="1" fill="none"
+                  transform="rotate(45 220 220)"
+                  style="transform-origin:220px 220px;animation:spin 10s linear infinite" />
+                <rect x="216" y="216" width="8" height="8" fill="#0a0a0a" transform="rotate(45 220 220)" opacity=".9" />
+                <circle cx="220" cy="90" r="3" fill="#0a0a0a" opacity=".6" />
+                <circle cx="350" cy="220" r="2" fill="#0a0a0a" opacity=".4" />
+                <circle cx="220" cy="350" r="3" fill="#0a0a0a" opacity=".6" />
+                <circle cx="90" cy="220" r="2" fill="#0a0a0a" opacity=".4" />
+                <circle cx="275" cy="115" r="2" fill="#0a0a0a" opacity=".35" />
+                <line x1="220" y1="90" x2="275" y2="115" stroke="#0a0a0a" stroke-width=".5" opacity=".2" />
+              </svg>
+              <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
+                <span
+                  style="font-size:9px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:8px">Unit</span>
+                <span
+                  style="font-size:18px;font-weight:700;color:var(--black);letter-spacing:.08em;text-transform:uppercase;display:block;font-family:var(--serif)">HiveCell</span>
+                <span
+                  style="font-size:9px;color:var(--muted);letter-spacing:.15em;margin-top:6px;display:block">SEC-LAB-001</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+
+  </section>
+
+  <div class="ticker-wrap">
+    <div class="ticker-inner" id="ticker"></div>
   </div>
-</section>
 
-<div class="ticker-wrap">
-  <div class="ticker-inner" id="ticker"></div>
-</div>
+  <section id="hero">
+    <div class="page">
+      <h1 class="hero-title">Hive<em>Cell</em></h1>
+      <p class="hero-desc">
+        An independent laboratory dedicated to offensive and defensive cybersecurity research. We focus on
+        <b>vulnerability discovery</b>, <b>reverse engineering</b>, and <b>security tool development</b>—building
+        knowledge and honing our craft within an environment of open collaboration.
+      </p>
 
-<section id="hero">
-  <div class="page">
-    <h1 class="hero-title">Hive<em>Cell</em></h1>
-    <p class="hero-desc">
-      An independent laboratory dedicated to offensive and defensive cybersecurity research. We focus on <b>vulnerability discovery</b>, <b>reverse engineering</b>, and <b>security tool development</b>—building knowledge and honing our craft within an environment of open collaboration.
-    </p>
-    <div class="hero-btns">
-      <button class="btn-primary" onclick="document.getElementById('research').scrollIntoView({behavior:'smooth'})">Read Deep Dives</button>
-      <button class="btn-secondary" onclick="document.getElementById('capabilities').scrollIntoView({behavior:'smooth'})">Research Areas</button>
-    </div>
-  </div>
-</section>
-
-<section id="capabilities">
-  <div class="page">
-    <div class="sec-header fade-in">
-      <div class="sec-tag">01 — Expertise</div>
-      <div class="sec-title">Research <em>Areas</em></div>
-      <div class="sec-sub">Covering mainstream offensive and defensive research vectors, from low-level exploitation to automated tooling.</div>
-    </div>
-    <div class="cap-grid fade-in">
-      <div class="cap-card">
-        <div class="cap-num">01 —</div>
-        <div class="cap-line"></div>
-        <div class="cap-name">Web Pentesting & Bug Hunting</div>
-        <div class="cap-desc">Security research on Web applications, including business logic flaws, injection vulnerabilities, and authentication bypass, covering everything from core principles to full exploit chains.</div>
-        <div class="cap-tags"><span class="cap-tag">XSS</span><span class="cap-tag">SQLi</span><span class="cap-tag">SSRF</span><span class="cap-tag">Auth</span></div>
-      </div>
-      <div class="cap-card">
-        <div class="cap-num">02 —</div>
-        <div class="cap-line"></div>
-        <div class="cap-name">Binary Vulnerability Research</div>
-        <div class="cap-desc">Binary security research for Linux/Windows platforms, focusing on the analysis and exploitation of memory corruption vulnerabilities like stack/heap overflows, format strings, and UAF.</div>
-        <div class="cap-tags"><span class="cap-tag">PWN</span><span class="cap-tag">Heap</span><span class="cap-tag">ROP</span></div>
-      </div>
-      <div class="cap-card">
-        <div class="cap-num">03 —</div>
-        <div class="cap-line"></div>
-        <div class="cap-name">Reverse Engineering</div>
-        <div class="cap-desc">Static and dynamic analysis of binaries, firmware, and obfuscated code to reconstruct logic, discover backdoors, and parse proprietary protocols.</div>
-        <div class="cap-tags"><span class="cap-tag">IDA</span><span class="cap-tag">Ghidra</span><span class="cap-tag">Firmware</span></div>
-      </div>
-      <div class="cap-card">
-        <div class="cap-num">04 —</div>
-        <div class="cap-line"></div>
-        <div class="cap-name">CTF Operations</div>
-        <div class="cap-desc">Participation in major domestic and international CTF events, covering Pwn, Crypto, Reverse, Web, and Misc categories—learning through competition.</div>
-        <div class="cap-tags"><span class="cap-tag">CTF</span><span class="cap-tag">AWD</span><span class="cap-tag">Jeopardy</span></div>
-      </div>
-      <div class="cap-card">
-        <div class="cap-num">05 —</div>
-        <div class="cap-line"></div>
-        <div class="cap-name">Malware Analysis</div>
-        <div class="cap-desc">Behavioral analysis and code reconstruction of captured malicious programs, tracking C2 communications, analyzing persistence mechanisms, and extracting IoC signatures.</div>
-        <div class="cap-tags"><span class="cap-tag">Malware</span><span class="cap-tag">C2</span><span class="cap-tag">IoC</span></div>
-      </div>
-      <div class="cap-card">
-        <div class="cap-num">06 —</div>
-        <div class="cap-line"></div>
-        <div class="cap-name">Security Tooling</div>
-        <div class="cap-desc">Development of internal offensive/defensive auxiliary tools, including scanners, automated exploit frameworks, and traffic analysis scripts.</div>
-        <div class="cap-tags"><span class="cap-tag">Python</span><span class="cap-tag">C/C++</span><span class="cap-tag">Rust</span></div>
+      <div class="hero-btns">
+        <button class="btn-primary"
+          onclick="document.getElementById('research').scrollIntoView({behavior:'smooth'})">Read Deep Dives</button>
+        <button class="btn-secondary"
+          onclick="document.getElementById('capabilities').scrollIntoView({behavior:'smooth'})">Research Areas</button>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="research">
-  <div class="page">
-    <div class="sec-header fade-in">
-      <div class="sec-tag">02 — Deep Dives</div>
-      <div class="sec-title">Technical <em>Analysis</em></div>
-      <div class="sec-sub">Public vulnerability reports, exploit walkthroughs, and open-source tools from our members' daily research.</div>
-    </div>
-    <div class="research-grid fade-in">
-      <div class="res-card featured">
-        <div>
-          <div class="res-meta">
-            <span class="res-type cve">CVE-2024-38193</span>
-            <span class="res-date">NOV 2024</span>
-            <span class="res-sev">CRITICAL · 9.8</span>
+  <section id="capabilities">
+    <div class="page">
+      <div class="sec-header fade-in">
+        <div class="sec-tag">01 — Expertise</div>
+        <div class="sec-title">Research <em>Areas</em></div>
+
+      </div>
+      <div class="cap-grid fade-in">
+        <div class="cap-card">
+          <div class="cap-num">01 —</div>
+          <div class="cap-line"></div>
+          <div class="cap-name">Web Pentesting & Bug Hunting</div>
+          <div class="cap-desc">Security research on Web applications, including business logic flaws, injection
+            vulnerabilities, and authentication bypass, covering everything from core principles to full exploit chains.
           </div>
-          <div class="res-title">Windows AFD Driver Race Condition Leading to LPE</div>
-          <div class="res-desc">A Use-After-Free (UAF) vulnerability exists in the Windows Ancillary Function Driver (afd.sys), triggered by a race condition in the IOCTL dispatch path. Combined with heap spraying, this allows for Local Privilege Escalation to SYSTEM.</div>
-          <div class="res-footer">
-            <span class="res-author">by <span>0xVOID</span></span>
-            <a href="#" class="res-link">Full Report</a>
-          </div>
+          <div class="cap-tags"><span class="cap-tag">XSS</span><span class="cap-tag">SQLi</span><span
+              class="cap-tag">SSRF</span><span class="cap-tag">Auth</span></div>
         </div>
-        <div class="res-featured-visual">
-          <pre class="rfv-text"><span style="color:#c8c8c8">// afd.sys — vulnerable dispatch</span>
+        <div class="cap-card">
+          <div class="cap-num">02 —</div>
+          <div class="cap-line"></div>
+          <div class="cap-name">Binary Vulnerability Research</div>
+          <div class="cap-desc">Binary security research for Linux/Windows platforms, focusing on the analysis and
+            exploitation of memory corruption vulnerabilities like stack/heap overflows, format strings, and UAF.</div>
+          <div class="cap-tags"><span class="cap-tag">PWN</span><span class="cap-tag">Heap</span><span
+              class="cap-tag">ROP</span></div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-num">03 —</div>
+          <div class="cap-line"></div>
+          <div class="cap-name">Reverse Engineering</div>
+          <div class="cap-desc">Static and dynamic analysis of binaries, firmware, and obfuscated code to reconstruct
+            logic, discover backdoors, and parse proprietary protocols.</div>
+          <div class="cap-tags"><span class="cap-tag">IDA</span><span class="cap-tag">Ghidra</span><span
+              class="cap-tag">Firmware</span></div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-num">04 —</div>
+          <div class="cap-line"></div>
+          <div class="cap-name">CTF Operations</div>
+          <div class="cap-desc">Participation in major domestic and international CTF events, covering Pwn, Crypto,
+            Reverse, Web, and Misc categories—learning through competition.</div>
+          <div class="cap-tags"><span class="cap-tag">CTF</span><span class="cap-tag">AWD</span><span
+              class="cap-tag">Jeopardy</span></div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-num">05 —</div>
+          <div class="cap-line"></div>
+          <div class="cap-name">Malware Analysis</div>
+          <div class="cap-desc">Behavioral analysis and code reconstruction of captured malicious programs, tracking C2
+            communications, analyzing persistence mechanisms, and extracting IoC signatures.</div>
+          <div class="cap-tags"><span class="cap-tag">Malware</span><span class="cap-tag">C2</span><span
+              class="cap-tag">IoC</span></div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-num">06 —</div>
+          <div class="cap-line"></div>
+          <div class="cap-name">Security Tooling</div>
+          <div class="cap-desc">Development of internal offensive/defensive auxiliary tools, including scanners,
+            automated exploit frameworks, and traffic analysis scripts.</div>
+          <div class="cap-tags"><span class="cap-tag">Python</span><span class="cap-tag">C/C++</span><span
+              class="cap-tag">Rust</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="research">
+    <div class="page">
+      <div class="sec-header fade-in">
+        <div class="sec-tag">02 — Deep Dives</div>
+        <div class="sec-title">Technical <em>Analysis</em></div>
+        <div class="sec-sub">Public vulnerability reports, exploit walkthroughs, and open-source tools from our members'
+          daily research.</div>
+      </div>
+      <div class="research-grid fade-in">
+        <div class="res-card featured">
+          <div>
+            <div class="res-meta">
+              <span class="res-type cve">CVE-2024-38193</span>
+              <span class="res-date">NOV 2024</span>
+              <span class="res-sev">CRITICAL · 9.8</span>
+            </div>
+            <div class="res-title">Windows AFD Driver Race Condition Leading to LPE</div>
+            <div class="res-desc">A Use-After-Free (UAF) vulnerability exists in the Windows Ancillary Function Driver
+              (afd.sys), triggered by a race condition in the IOCTL dispatch path. Combined with heap spraying, this
+              allows for Local Privilege Escalation to SYSTEM.</div>
+            <div class="res-footer">
+              <span class="res-author">by <span>0xVOID</span></span>
+              <a href="#" class="res-link">Full Report</a>
+            </div>
+          </div>
+          <div class="res-featured-visual">
+            <pre class="rfv-text"><span style="color:#c8c8c8">// afd.sys — vulnerable dispatch</span>
 <span style="color:#0a0a0a">AfdDispatch</span>(<span style="color:#3a3a3a">PIRP Irp</span>) {
   ctx = <span style="color:#0a0a0a">AfdGetContext</span>(Irp);
   <span style="color:#c8c8c8">// [UAF window opens here]</span>
@@ -502,240 +1458,267 @@ footer{border-top:1px solid var(--border2);background:var(--bg2);padding:56px 0}
 }
 <span style="color:#555">KPCR spray offset: 0x180</span>
 <span style="color:#555">Win11 23H2 · Patched KB5040442</span></pre>
+          </div>
         </div>
-      </div>
 
-      <div class="res-card">
-        <div class="res-meta">
-          <span class="res-type research">Research</span>
-          <span class="res-date">OCT 2024</span>
-          <span class="res-sev">HIGH</span>
+        <div class="res-card">
+          <div class="res-meta">
+            <span class="res-type research">Research</span>
+            <span class="res-date">OCT 2024</span>
+            <span class="res-sev">HIGH</span>
+          </div>
+          <div class="res-title">V8 JIT Type Confusion — Chrome Sandbox Escape Analysis</div>
+          <div class="res-desc">Analysis of a novel exploitation path in the V8 Turbofan compiler, triggering type
+            confusion during speculative optimization to achieve arbitrary read/write.</div>
+          <div class="res-footer">
+            <span class="res-author">by <span>n0fade</span></span>
+            <a href="#" class="res-link">Read More</a>
+          </div>
         </div>
-        <div class="res-title">V8 JIT Type Confusion — Chrome Sandbox Escape Analysis</div>
-        <div class="res-desc">Analysis of a novel exploitation path in the V8 Turbofan compiler, triggering type confusion during speculative optimization to achieve arbitrary read/write.</div>
-        <div class="res-footer">
-          <span class="res-author">by <span>n0fade</span></span>
-          <a href="#" class="res-link">Read More</a>
-        </div>
-      </div>
 
-      <div class="res-card">
-        <div class="res-meta">
-          <span class="res-type tool">Tool</span>
-          <span class="res-date">SEP 2024</span>
-          <span class="res-sev low">UTIL</span>
+        <div class="res-card">
+          <div class="res-meta">
+            <span class="res-type tool">Tool</span>
+            <span class="res-date">SEP 2024</span>
+            <span class="res-sev low">UTIL</span>
+          </div>
+          <div class="res-title">NULLCHAIN — Multi-Arch Automated ROP Chain Generator</div>
+          <div class="res-desc">An open-source ROP chain construction tool utilizing the angr symbolic execution engine
+            for Gadget semantic analysis. Supports x64, ARM64, and RISC-V.</div>
+          <div class="res-footer">
+            <span class="res-author">by <span>ropcraft</span></span>
+            <a href="#" class="res-link">GitHub</a>
+          </div>
         </div>
-        <div class="res-title">NULLCHAIN — Multi-Arch Automated ROP Chain Generator</div>
-        <div class="res-desc">An open-source ROP chain construction tool utilizing the angr symbolic execution engine for Gadget semantic analysis. Supports x64, ARM64, and RISC-V.</div>
-        <div class="res-footer">
-          <span class="res-author">by <span>ropcraft</span></span>
-          <a href="#" class="res-link">GitHub</a>
-        </div>
-      </div>
 
-      <div class="res-card">
-        <div class="res-meta">
-          <span class="res-type advisory">Advisory</span>
-          <span class="res-date">AUG 2024</span>
-          <span class="res-sev">HIGH · 8.1</span>
+        <div class="res-card">
+          <div class="res-meta">
+            <span class="res-type advisory">Advisory</span>
+            <span class="res-date">AUG 2024</span>
+            <span class="res-sev">HIGH · 8.1</span>
+          </div>
+          <div class="res-title">OpenSSL FIPS Module RSA Decryption Timing Side-Channel</div>
+          <div class="res-desc">The RSA implementation in OpenSSL 3.x FIPS modules contains timing differences during
+            CRT recombination, allowing for private key material recovery.</div>
+          <div class="res-footer">
+            <span class="res-author">by <span>cryptokill</span></span>
+            <a href="#" class="res-link">Advisory</a>
+          </div>
         </div>
-        <div class="res-title">OpenSSL FIPS Module RSA Decryption Timing Side-Channel</div>
-        <div class="res-desc">The RSA implementation in OpenSSL 3.x FIPS modules contains timing differences during CRT recombination, allowing for private key material recovery.</div>
-        <div class="res-footer">
-          <span class="res-author">by <span>cryptokill</span></span>
-          <a href="#" class="res-link">Advisory</a>
-        </div>
-      </div>
 
-      <div class="res-card">
-        <div class="res-meta">
-          <span class="res-type cve">CVE-2024-21762</span>
-          <span class="res-date">JUL 2024</span>
-          <span class="res-sev">CRITICAL · 9.6</span>
-        </div>
-        <div class="res-title">Fortinet FortiOS Out-of-Bounds Write leading to Unauth RCE</div>
-        <div class="res-desc">An out-of-bounds write vulnerability in the SSL-VPN interface. Unauthenticated remote attackers can execute code with root privileges.</div>
-        <div class="res-footer">
-          <span class="res-author">by <span>0xVOID</span></span>
-          <a href="#" class="res-link">PoC Analysis</a>
+        <div class="res-card">
+          <div class="res-meta">
+            <span class="res-type cve">CVE-2024-21762</span>
+            <span class="res-date">JUL 2024</span>
+            <span class="res-sev">CRITICAL · 9.6</span>
+          </div>
+          <div class="res-title">Fortinet FortiOS Out-of-Bounds Write leading to Unauth RCE</div>
+          <div class="res-desc">An out-of-bounds write vulnerability in the SSL-VPN interface. Unauthenticated remote
+            attackers can execute code with root privileges.</div>
+          <div class="res-footer">
+            <span class="res-author">by <span>0xVOID</span></span>
+            <a href="#" class="res-link">PoC Analysis</a>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="team">
-  <div class="page">
-    <div class="sec-header fade-in">
-      <div class="sec-tag">03 — Operators</div>
-      <div class="sec-title">The <em>Team</em></div>
-      <div class="sec-sub">Anonymous, identified only by handles. We welcome technical contributions from all.</div>
-    </div>
-    <div class="team-grid fade-in">
-      <div class="team-card">
-        <div class="team-avatar">
-          <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-            <rect x="8" y="6" width="20" height="16" rx="2" stroke="#0a0a0a" stroke-width="1"/>
-            <circle cx="18" cy="14" r="5" stroke="#0a0a0a" stroke-width="1"/>
-            <path d="M6 30c0-6 5.4-10 12-10s12 4 12 10" stroke="#0a0a0a" stroke-width="1"/>
-          </svg>
-        </div>
-        <div class="team-handle">0x00</div>
-        <div class="team-role">Founder · Exploit Dev</div>
-        
-        <div class="team-skills"><span class="tsk">Kernel</span><span class="tsk">Windows</span><span class="tsk">ROP</span></div>
+  <section id="team">
+    <div class="page">
+      <div class="sec-header fade-in">
+        <div class="sec-tag">03 — Operators</div>
+        <div class="sec-title">The <em>Team</em></div>
+        <div class="sec-sub">Anonymous, identified only by handles. We welcome technical contributions from all.</div>
       </div>
-      <div class="team-card">
-        <div class="team-avatar">
-          <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-            <rect x="8" y="6" width="20" height="16" rx="2" stroke="#0a0a0a" stroke-width="1"/>
-            <circle cx="18" cy="14" r="5" stroke="#0a0a0a" stroke-width="1"/>
-            <path d="M6 30c0-6 5.4-10 12-10s12 4 12 10" stroke="#0a0a0a" stroke-width="1"/>
-          </svg>
-        </div>
-        <div class="team-handle">sp3ctr3</div>
-        <div class="team-role">Vuln Research</div>
-       
-        <div class="team-skills"><span class="tsk">Fuzzing</span><span class="tsk">Linux</span><span class="tsk">AFL++</span></div>
-      </div>
-      <div class="team-card">
-        <div class="team-avatar">
-          <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-            <rect x="8" y="6" width="20" height="16" rx="2" stroke="#0a0a0a" stroke-width="1"/>
-            <circle cx="18" cy="14" r="5" stroke="#0a0a0a" stroke-width="1"/>
-            <path d="M6 30c0-6 5.4-10 12-10s12 4 12 10" stroke="#0a0a0a" stroke-width="1"/>
-          </svg>
-        </div>
-        <div class="team-handle">n0fade</div>
-        <div class="team-role">Browser Security</div>
-        
-        <div class="team-skills"><span class="tsk">V8</span><span class="tsk">JIT</span><span class="tsk">Sandbox</span></div>
-      </div>
-      <div class="team-card">
-        <div class="team-avatar">
-          <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-            <rect x="8" y="6" width="20" height="16" rx="2" stroke="#0a0a0a" stroke-width="1"/>
-            <circle cx="18" cy="14" r="5" stroke="#0a0a0a" stroke-width="1"/>
-            <path d="M6 30c0-6 5.4-10 12-10s12 4 12 10" stroke="#0a0a0a" stroke-width="1"/>
-          </svg>
-        </div>
-        <div class="team-handle">cryptokill</div>
-        <div class="team-role">Cryptography</div>
-        
-        <div class="team-skills"><span class="tsk">Lattice</span><span class="tsk">Side-Ch.</span><span class="tsk">Crypto</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="terminal">
-  <div class="page">
-    <div class="sec-header fade-in">
-      <div class="sec-tag">04 — Contact</div>
-      <div class="sec-title">Secure <em>Channel</em></div>
-    </div>
-    <div class="term-wrap fade-in">
-      <div class="term-bar">
-        <div class="term-dot" style="background:#e0dedd"></div>
-        <div class="term-dot" style="background:#c8c8c8"></div>
-        <div class="term-dot" style="background:#0a0a0a"></div>
-        <span class="term-title">hivecell-secure-channel — bash — 80×24</span>
-      </div>
-      <div class="term-body">
-        <span class="term-line"><span class="prompt">root@hivecell:~# </span><span class="cmd">./contact.sh --init</span></span>
-        <span class="term-line">&nbsp;</span>
-        <span class="term-line"><span class="out">[ HIVECELL SECURE CONTACT PROTOCOL v1.0 ]</span></span>
-        <span class="term-line"><span class="out">Initializing encrypted channel...</span></span>
-        <span class="term-line">&nbsp;</span>
-       
-        <span class="term-line"><span class="comment">// Vulnerability Disclosure / Research Exchange:</span></span>
-        <span class="term-line"><span class="comment">// Join the Lab — Send resumes and technical work to:</span></span>
-        <span class="term-line"><span class="out"> TH9261@outlook.com</span></span>
-        <span class="term-line">&nbsp;</span>
-        <span class="term-line"><span class="comment">// No response to pure sales or marketing inquiries.</span></span>
-        <span class="term-line">&nbsp;</span>
-        <span class="term-line"><span class="out">[ STATUS: OPEN FOR RESEARCH COLLABORATION ]</span></span>
-        <span class="term-line">&nbsp;</span>
-        <span class="term-line"><span class="prompt">root@hivecell:~# </span><span class="term-cursor"></span></span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="page">
-    <div class="footer-inner">
-      <div>
-        <div class="footer-logo">
-          <div class="footer-hex">
-            <svg width="30" height="30" viewBox="0 0 28 28" fill="none">
-              <polygon points="14,2 24,7.5 24,20.5 14,26 4,20.5 4,7.5" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="1"/>
-              <text x="14" y="18.5" text-anchor="middle" font-family="Georgia,serif" font-size="11" font-weight="700" fill="#ffffff" font-style="italic">F</text>
+      <div class="team-grid fade-in">
+        <div class="team-card">
+          <div class="team-avatar">
+            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+              <rect x="8" y="6" width="20" height="16" rx="2" stroke="#0a0a0a" stroke-width="1" />
+              <circle cx="18" cy="14" r="5" stroke="#0a0a0a" stroke-width="1" />
+              <path d="M6 30c0-6 5.4-10 12-10s12 4 12 10" stroke="#0a0a0a" stroke-width="1" />
             </svg>
           </div>
-          <span class="footer-name">Hive<em>Cell</em></span>
-        </div>
-        <div class="footer-tagline">
-          Security Research Lab<br>
-          Collective Intelligence · Proactive Defense
-        </div>
-      </div>
-   
-      <div class="footer-right">
-        <div class="footer-status"><div class="status-dot"></div><span>All systems operational</span></div>
-        <div class="footer-copy">
-          © 2026 HiveCell Lab<br>
-          Coordinated Disclosure Principles Apply.<br>
-          Unauthorized access is strictly prohibited.
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span class="fb-left">HIVECELL SECURITY RESEARCH LAB · ALL RIGHTS RESERVED</span>
-      <div class="fb-right">
-        <a href="#" class="fb-link">Privacy Policy</a>
-        <a href="#" class="fb-link">Disclosure Policy</a>
-        <a href="#" class="fb-link">PGP Keys</a>
-      </div>
-    </div>
-  </div>
-</footer>
+          <div class="team-handle">0x00</div>
+          <div class="team-role">Founder · Exploit Dev</div>
 
-<style>
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-</style>
-<script>
-const items = [
-  { t: 'SYSTEM ONLINE', b: false },
-  { t: 'RESEARCH — VULN DISCOVERY · REVERSE ENGINEERING · TOOLING', b: true },
-  { t: 'HIVECELL LAB · SECURITY RESEARCH', b: false },
-  { t: 'OPEN FOR RESEARCH COLLABORATION', b: true },
-  
-  { t: 'Hacker', b: true },
- 
-  { t: 'PWN · CRYPTO · REVERSE · WEB', b: false },
-];
-const tk=document.getElementById('ticker');
-[...items,...items].forEach(item=>{
-  const el=document.createElement('span');
-  el.className='tick-item';
-  el.innerHTML=`<span class="tk-dash"></span><span class="${item.b?'tk-bold':''}">${item.t}</span>`;
-  tk.appendChild(el);
-});
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
-},{threshold:.1});
-document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
-const sections=document.querySelectorAll('section[id]');
-const navLinks=document.querySelectorAll('.nav-link');
-window.addEventListener('scroll',()=>{
-  let current='';
-  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-120)current=s.id});
-  navLinks.forEach(l=>{
-    l.classList.remove('active');
-    if(l.getAttribute('href')==='#'+current)l.classList.add('active');
-  });
-});
-</script>
+          <div class="team-skills"><span class="tsk">Kernel</span><span class="tsk">Windows</span><span
+              class="tsk">ROP</span></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+              <rect x="8" y="6" width="20" height="16" rx="2" stroke="#0a0a0a" stroke-width="1" />
+              <circle cx="18" cy="14" r="5" stroke="#0a0a0a" stroke-width="1" />
+              <path d="M6 30c0-6 5.4-10 12-10s12 4 12 10" stroke="#0a0a0a" stroke-width="1" />
+            </svg>
+          </div>
+          <div class="team-handle">Foxes</div>
+          <div class="team-role">Vuln Research</div>
+          <div class="team-bio">Fuzzing Architect leading the development of kernel fuzzing frameworks. Loves syzkaller,
+            dislikes printers. Research spans Linux kernel and driver layers.</div>
+          <div class="team-skills"><span class="tsk">Fuzzing</span><span class="tsk">Linux</span><span
+              class="tsk">AFL++</span></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+              <rect x="8" y="6" width="20" height="16" rx="2" stroke="#0a0a0a" stroke-width="1" />
+              <circle cx="18" cy="14" r="5" stroke="#0a0a0a" stroke-width="1" />
+              <path d="M6 30c0-6 5.4-10 12-10s12 4 12 10" stroke="#0a0a0a" stroke-width="1" />
+            </svg>
+          </div>
+          <div class="team-handle">Ming</div>
+          <div class="team-role">Browser Security</div>
+          <div class="team-bio">V8 / SpiderMonkey Reverse Engineer and JIT exploitation researcher. Afraid to open their
+            own PoCs in a browser.</div>
+          <div class="team-skills"><span class="tsk">V8</span><span class="tsk">JIT</span><span
+              class="tsk">Sandbox</span></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+              <rect x="8" y="6" width="20" height="16" rx="2" stroke="#0a0a0a" stroke-width="1" />
+              <circle cx="18" cy="14" r="5" stroke="#0a0a0a" stroke-width="1" />
+              <path d="M6 30c0-6 5.4-10 12-10s12 4 12 10" stroke="#0a0a0a" stroke-width="1" />
+            </svg>
+          </div>
+          <div class="team-handle">cryptokill</div>
+          <div class="team-role">Cryptography</div>
+          <div class="team-bio">Applied Cryptography researcher specializing in side-channel attacks and implementation
+            flaws. Focused on lattice-based attacks.</div>
+          <div class="team-skills"><span class="tsk">Lattice</span><span class="tsk">Side-Ch.</span><span
+              class="tsk">Crypto</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="terminal">
+    <div class="page">
+      <div class="sec-header fade-in">
+        <div class="sec-tag">04 — Contact</div>
+        <div class="sec-title">Secure <em>Channel</em></div>
+      </div>
+      <div class="term-wrap fade-in">
+        <div class="term-bar">
+          <div class="term-dot" style="background:#e0dedd"></div>
+          <div class="term-dot" style="background:#c8c8c8"></div>
+          <div class="term-dot" style="background:#0a0a0a"></div>
+          <span class="term-title">hivecell-secure-channel — bash — 80×24</span>
+        </div>
+        <div class="term-body">
+          <span class="term-line"><span class="prompt">root@hivecell:~# </span><span class="cmd">./contact.sh
+              --init</span></span>
+          <span class="term-line">&nbsp;</span>
+          <span class="term-line"><span class="out">[ HIVECELL SECURE CONTACT PROTOCOL v1.0 ]</span></span>
+          <span class="term-line"><span class="out">Initializing encrypted channel...</span></span>
+          <span class="term-line">&nbsp;</span>
+
+          <span class="term-line"><span class="comment">// Vulnerability Disclosure / Research Exchange:</span></span>
+          <span class="term-line"><span class="comment">// Join the Lab — Send resumes and technical work
+              to:</span></span>
+          <span class="term-line"><span class="out"> TH9261@outlook.com</span></span>
+          <span class="term-line">&nbsp;</span>
+          <span class="term-line"><span class="comment">// No response to pure sales or marketing
+              inquiries.</span></span>
+          <span class="term-line">&nbsp;</span>
+          <span class="term-line"><span class="out">[ STATUS: OPEN FOR RESEARCH COLLABORATION ]</span></span>
+          <span class="term-line">&nbsp;</span>
+          <span class="term-line"><span class="prompt">root@hivecell:~# </span><span class="term-cursor"></span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="page">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">
+            <div class="footer-hex">
+              <svg width="30" height="30" viewBox="0 0 28 28" fill="none">
+                <polygon points="14,2 24,7.5 24,20.5 14,26 4,20.5 4,7.5" fill="#0a0a0a" stroke="#0a0a0a"
+                  stroke-width="1" />
+                <text x="14" y="18.5" text-anchor="middle" font-family="Georgia,serif" font-size="11" font-weight="700"
+                  fill="#ffffff" font-style="italic">F</text>
+              </svg>
+            </div>
+            <span class="footer-name">Hive<em>Cell</em></span>
+          </div>
+          <div class="footer-tagline">
+            Security Research Lab<br>
+            Collective Intelligence · Proactive Defense
+          </div>
+        </div>
+
+        <div class="footer-right">
+          <div class="footer-status">
+            <div class="status-dot"></div><span>All systems operational</span>
+          </div>
+          <div class="footer-copy">
+            © 2026 HiveCell Lab<br>
+            Coordinated Disclosure Principles Apply.<br>
+            Unauthorized access is strictly prohibited.
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="fb-left">HIVECELL SECURITY RESEARCH LAB · ALL RIGHTS RESERVED</span>
+        <div class="fb-right">
+          <a href="#" class="fb-link">Privacy Policy</a>
+          <a href="#" class="fb-link">Disclosure Policy</a>
+          <a href="#" class="fb-link">PGP Keys</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <style>
+    @keyframes spin {
+      from {
+        transform: rotate(0deg)
+      }
+
+      to {
+        transform: rotate(360deg)
+      }
+    }
+  </style>
+  <script>
+    const items = [
+      { t: 'SYSTEM ONLINE', b: false },
+      { t: 'RESEARCH — VULN DISCOVERY · REVERSE ENGINEERING · TOOLING', b: true },
+      { t: 'HIVECELL LAB · SECURITY RESEARCH', b: false },
+      { t: 'OPEN FOR RESEARCH COLLABORATION', b: true },
+      { t: 'CVE-2024-38193 — WINDOWS KERNEL — PUBLISHED', b: false },
+      { t: 'Hacker', b: true },
+      { t: 'NULLCHAIN TOOL — OPEN SOURCE RELEASED', b: false },
+      { t: 'PWN · CRYPTO · REVERSE · WEB', b: false },
+    ];
+    const tk = document.getElementById('ticker');
+    [...items, ...items].forEach(item => {
+      const el = document.createElement('span');
+      el.className = 'tick-item';
+      el.innerHTML = `<span class="tk-dash"></span><span class="${item.b ? 'tk-bold' : ''}">${item.t}</span>`;
+      tk.appendChild(el);
+    });
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target) } });
+    }, { threshold: .1 });
+    document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id });
+      navLinks.forEach(l => {
+        l.classList.remove('active');
+        if (l.getAttribute('href') === '#' + current) l.classList.add('active');
+      });
+    });
+  </script>
 </body>
+
 </html>
